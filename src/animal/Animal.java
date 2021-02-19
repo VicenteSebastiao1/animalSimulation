@@ -14,7 +14,6 @@ public abstract class Animal extends FieldObject
 {
     //protected static final String FIELD_TYPE;
     protected final boolean isMale;
-    protected int age;	
     protected boolean isSick;
     protected int stepsBeingSick = 0;
     public static final Random rand = Randomizer.getRandom();
@@ -31,25 +30,6 @@ public abstract class Animal extends FieldObject
     {
     	super(field, location);
         this.isMale = rand.nextBoolean();
-    }
-    
-    
-    
-    /**
-     * Make this animal act - that is: make it do
-     * whatever it wants/needs to do.
-     * @param newAnimals A list to receive newly born animals.
-     */
-    abstract public void act(List<Animal> newAnimals); 
-    
-    
-    /**
-     * Return the animal's field.
-     * @return The animal's field.
-     */
-    protected Field getField()
-    {
-        return field;
     }
     
     protected void incrementAge(Integer max_age)
@@ -73,28 +53,6 @@ public abstract class Animal extends FieldObject
         if(foodLevel <= 0) {
             setDead();
         }
-    }
-    
-    /**
-     * Generate a number representing the number of births,
-     * if it can breed.
-     * @return The number of births (may be zero).
-     */
-    protected int breed(Integer breeding_age, double breeding_probability, int max_litter_size)
-    {
-        int births = 0;
-        if(canBreed(breeding_age) && rand.nextDouble() <= breeding_probability) {
-            births = rand.nextInt(max_litter_size) + 1;
-        }
-        return births;
-    }
-    
-    /**
-     * A fox can breed if it has reached the breeding age.
-     */
-    private boolean canBreed(Integer breeding_age)
-    {
-        return age >= breeding_age;
     }
     
     /**

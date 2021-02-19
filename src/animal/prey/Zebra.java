@@ -47,7 +47,7 @@ public class Zebra extends Prey{
     }
 
 	@Override
-	public void act(List<Animal> newZebras) {
+	public void act(List<FieldObject> newZebras) {
 		incrementAge(MAX_AGE);
         incrementHunger();
         if(isAlive()) {
@@ -75,7 +75,7 @@ public class Zebra extends Prey{
      * New births will be made into free adjacent locations.
      * @param newFoxes A list to return newly born foxes.
      */
-    private void giveBirth(List<Animal> newZebras)
+    private void giveBirth(List<FieldObject> newZebras)
     {
         // New foxes are born into adjacent locations.
         // Get a list of adjacent free locations.

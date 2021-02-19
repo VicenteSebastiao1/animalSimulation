@@ -45,6 +45,7 @@ public class Crocodile extends Predator {
             this.isSick = rand.nextDouble() < 0.1;
             if(this.isSick) {
             	this.stepsBeingSick = rand.nextInt(1000);
+            }
         }
         else {
             age = 0;
@@ -53,35 +54,35 @@ public class Crocodile extends Predator {
         }
     }
 
-    	@Override
-    	public void act(List<Animal> newCrocodiles) {
-    		incrementAge(MAX_AGE);
-            incrementHunger();
-            incrementStepsSick();
-            if(isAlive()) {
-                giveBirth(newCrocodiles);            
-                // Move towards a source of food if found.
-                Location newLocation = findFood();
-                if(newLocation == null) { 
-                    // No food found - try to move to a free location.
-                    newLocation = getField().freeAdjacentLocation(getLocation());
-                }
-                // See if it was possible to move.
-                if(newLocation != null) {
-                    setLocation(newLocation);
-                }
-                else {
-                    // Overcrowding.
-                    setDead();
-                }
-            }	
-    	}
+	@Override
+	public void act(List<FieldObject> newCrocodiles) {
+		incrementAge(MAX_AGE);
+        incrementHunger();
+        incrementStepsSick();
+        if(isAlive()) {
+            giveBirth(newCrocodiles);            
+            // Move towards a source of food if found.
+            Location newLocation = findFood();
+            if(newLocation == null) { 
+                // No food found - try to move to a free location.
+                newLocation = getField().freeAdjacentLocation(getLocation());
+            }
+            // See if it was possible to move.
+            if(newLocation != null) {
+                setLocation(newLocation);
+            }
+            else {
+                // Overcrowding.
+                setDead();
+            }
+        }	
+	}
 	/**
      * Check whether or not this fox is to give birth at this step.
      * New births will be made into free adjacent locations.
      * @param newFoxes A list to return newly born foxes.
      */
-    private void giveBirth(List<Animal> newCrocodiles)
+    private void giveBirth(List<FieldObject> newCrocodiles)
     {
     	if(this.isMale) return;
         // New foxes are born into adjacent locations.
@@ -92,7 +93,7 @@ public class Crocodile extends Predator {
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
             Crocodile young = new Crocodile(false, field, loc);
-            new.add(young);
+            newCrocodiles.add(young);
         }
     }
     
@@ -128,8 +129,5 @@ public class Crocodile extends Predator {
     	}
     	throw new NoSuchElementException("Crocodiles cannot eat " + fieldObject.getClass());
     }
-
-}
-
 
 }

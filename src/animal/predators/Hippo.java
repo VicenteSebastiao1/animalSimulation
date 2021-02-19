@@ -54,7 +54,7 @@ public class Hippo extends Predator {
     }
 
 	@Override
-	public void act(List<Animal> newHippos) {
+	public void act(List<FieldObject> newHippos) {
 		incrementAge(MAX_AGE);
         incrementHunger();
         incrementStepsSick();
@@ -82,7 +82,7 @@ public class Hippo extends Predator {
      * New births will be made into free adjacent locations.
      * @param newFoxes A list to return newly born foxes.
      */
-    private void giveBirth(List<Animal> newHippos)
+    private void giveBirth(List<FieldObject> newHippos)
     {
     	if(this.isMale) return;
         // New foxes are born into adjacent locations.
@@ -114,11 +114,11 @@ public class Hippo extends Predator {
             	
             	if(fieldObject instanceof Plant) {
             		//fieldObject.???
+            	} else if(fieldObject instanceof Animal) {
+	            	fieldObject.setDead();
+	                foodLevel += this.getFoodValue(fieldObject);
+	                return where;
             	}
-            	else if(fieldObject instanceof Animal {
-            	fieldObject.setDead();
-                foodLevel += this.getFoodValue(fieldObject);
-                return where;
             }
         }
         return null;

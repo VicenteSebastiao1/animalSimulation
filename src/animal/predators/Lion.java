@@ -58,7 +58,7 @@ public class Lion extends Predator {
     }
 
 	@Override
-	public void act(List<Animal> newLions) {
+	public void act(List<FieldObject> newLions) {
 		incrementAge(MAX_AGE);
         incrementHunger();
         incrementStepsSick();
@@ -86,7 +86,7 @@ public class Lion extends Predator {
      * New births will be made into free adjacent locations.
      * @param newFoxes A list to return newly born foxes.
      */
-    private void giveBirth(List<Animal> newLions)
+    private void giveBirth(List<FieldObject> newLions)
     {
     	if(this.isMale) return;
         // New foxes are born into adjacent locations.

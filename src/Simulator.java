@@ -2,8 +2,10 @@ package src;
 import java.util.Random;
 
 import src.animal.Animal;
+import src.animal.FieldObject;
 import src.animal.Fox;
 import src.animal.Rabbit;
+import src.animal.plants.Plant;
 import src.animal.predators.Lion;
 import src.animal.prey.Antelope;
 import src.animal.prey.Zebra;
@@ -34,7 +36,7 @@ public class Simulator
     private static final double ANTELOPE_CREATION_PROBABILITY = 0.08;    
 
     // List of animals in the field.
-    private List<Animal> animals;
+    private List<FieldObject> animals;
     // The current state of the field.
     private Field field;
     // The current step of the simulation.
@@ -69,11 +71,13 @@ public class Simulator
 
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
+        Color green = new Color(0, 255, 0);
         view.setColor(Antelope.class, Color.ORANGE);
         view.setColor(Lion.class, Color.BLUE);
         view.setColor(Zebra.class, Color.BLACK);
         view.setColor(Ground.class, Color.RED);
         view.setColor(Water.class, Color.CYAN);
+        view.setColor(Plant.class, green);
         
         // Setup a valid starting point.
         reset();
@@ -97,7 +101,7 @@ public class Simulator
     {
         for(int step = 1; step <= numSteps && view.isViable(field); step++) {
             simulateOneStep();
-            delay(600);   // uncomment this to run more slowly
+            delay(6);   // uncomment this to run more slowly
         }
     }
     
@@ -111,12 +115,12 @@ public class Simulator
         step++;
 
         // Provide space for newborn animals.
-        List<Animal> newAnimals = new ArrayList<>();        
+        List<FieldObject> newAnimals = new ArrayList<>();        
         // Let all rabbits act.
-        for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) {
-            Animal animal = it.next();
-            animal.act(newAnimals);
-            if(! animal.isAlive()) {
+        for(Iterator<FieldObject> it = animals.iterator(); it.hasNext(); ) {
+            FieldObject fieldObject = it.next();
+            fieldObject.act(newAnimals);
+            if(! fieldObject.isAlive()) {
                 it.remove();
             }
         }
@@ -162,6 +166,10 @@ public class Simulator
                 	Location location = new Location(row, col);
                     Zebra zebra = new Zebra(true, field, location);
                     animals.add(zebra);
+                } else if(rand.nextDouble() <= ANTELOPE_CREATION_PROBABILITY) {
+                	Location location = new Location(row, col);
+                    Plant plant = new Plant(field, location);
+                    animals.add(plant);
                 }
                 // else leave the location empty.
             }
@@ -207,69 +215,88 @@ public class Simulator
 			} else {
 				groundCount++;
 			}
-			return 0.1 + 0.1 * waterCount - 0.01 * groundCount;
 		}
-		if(col == 0) {
-			Object floorTypeObject2 = field.getFloorTypeAt(row - 1, col);
-			Object floorTypeObject1 = field.getFloorTypeAt(row - 1, col + 1);
-			if(floorTypeObject1 instanceof Water) {
-				waterCount++;
-			} else {
-				groundCount++;
+		for(int i = 0; i < 3; i++) {
+			if(row > 0 && col + i - 1 > 0 && col + i - 1 < field.getWidth()) {
+				Object floorTypeObject = field.getFloorTypeAt(row - 1, col + i - 1);
+				if(floorTypeObject instanceof Water) {
+					waterCount++;
+				} else {
+					groundCount++;
+				}
 			}
-			if(floorTypeObject2 instanceof Water) {
-				waterCount++;
-			} else {
-				groundCount++;
-			}
-			return 0.1 + 0.1 * waterCount - 0.01 * groundCount;
 		}
-		if(col == field.getWidth() - 1) {
-			Object floorTypeObject1 = field.getFloorTypeAt(row - 1, col - 1);
-			Object floorTypeObject2 = field.getFloorTypeAt(row - 1, col);
-			Object floorTypeObject4 = field.getFloorTypeAt(row, col - 1);
-			if(floorTypeObject1 instanceof Water) {
-				waterCount++;
-			} else {
-				groundCount++;
-			}
-			if(floorTypeObject2 instanceof Water) {
-				waterCount++;
-			} else {
-				groundCount++;
-			}
-			if(floorTypeObject4 instanceof Water) {
-				waterCount++;
-			} else {
-				groundCount++;
-			}
-			return 0.1 + 0.1 * waterCount - 0.01 * groundCount;
-		}
-		Object floorTypeObject1 = field.getFloorTypeAt(row - 1, col - 1);
-		Object floorTypeObject2 = field.getFloorTypeAt(row - 1, col);
-		Object floorTypeObject3 = field.getFloorTypeAt(row - 1, col + 1);
-		Object floorTypeObject4 = field.getFloorTypeAt(row, col - 1);
-		if(floorTypeObject1 instanceof Water) {
-			waterCount++;
-		} else {
-			groundCount++;
-		}
-		if(floorTypeObject2 instanceof Water) {
-			waterCount++;
-		} else {
-			groundCount++;
-		}
-		if(floorTypeObject3 instanceof Water) {
-			waterCount++;
-		} else {
-			groundCount++;
-		}
-		if(floorTypeObject4 instanceof Water) {
-			waterCount++;
-		} else {
-			groundCount++;
-		}
-		return 0.1 + 0.1 * waterCount - 0.01 * groundCount;
+		return 0.1 + 0.15 * waterCount - 0.01 * groundCount;
+//		if(row == 0) {
+//			Object floorTypeObject = field.getFloorTypeAt(row, col - 1);
+//			if(floorTypeObject instanceof Water) {
+//				waterCount++;
+//			} else {
+//				groundCount++;
+//			}
+//			return 0.1 + 0.1 * waterCount - 0.01 * groundCount;
+//		}
+//		if(col == 0) {
+//			Object floorTypeObject2 = field.getFloorTypeAt(row - 1, col);
+//			Object floorTypeObject1 = field.getFloorTypeAt(row - 1, col + 1);
+//			if(floorTypeObject1 instanceof Water) {
+//				waterCount++;
+//			} else {
+//				groundCount++;
+//			}
+//			if(floorTypeObject2 instanceof Water) {
+//				waterCount++;
+//			} else {
+//				groundCount++;
+//			}
+//			return 0.1 + 0.1 * waterCount - 0.01 * groundCount;
+//		}
+//		if(col == field.getWidth() - 1) {
+//			Object floorTypeObject1 = field.getFloorTypeAt(row - 1, col - 1);
+//			Object floorTypeObject2 = field.getFloorTypeAt(row - 1, col);
+//			Object floorTypeObject4 = field.getFloorTypeAt(row, col - 1);
+//			if(floorTypeObject1 instanceof Water) {
+//				waterCount++;
+//			} else {
+//				groundCount++;
+//			}
+//			if(floorTypeObject2 instanceof Water) {
+//				waterCount++;
+//			} else {
+//				groundCount++;
+//			}
+//			if(floorTypeObject4 instanceof Water) {
+//				waterCount++;
+//			} else {
+//				groundCount++;
+//			}
+//			return 0.1 + 0.1 * waterCount - 0.01 * groundCount;
+//		}
+//		Object floorTypeObject1 = field.getFloorTypeAt(row - 1, col - 1);
+//		Object floorTypeObject2 = field.getFloorTypeAt(row - 1, col);
+//		Object floorTypeObject3 = field.getFloorTypeAt(row - 1, col + 1);
+//		Object floorTypeObject4 = field.getFloorTypeAt(row, col - 1);
+//		if(floorTypeObject1 instanceof Water) {
+//			waterCount++;
+//		} else {
+//			groundCount++;
+//		}
+//		if(floorTypeObject2 instanceof Water) {
+//			waterCount++;
+//		} else {
+//			groundCount++;
+//		}
+//		if(floorTypeObject3 instanceof Water) {
+//			waterCount++;
+//		} else {
+//			groundCount++;
+//		}
+//		if(floorTypeObject4 instanceof Water) {
+//			waterCount++;
+//		} else {
+//			groundCount++;
+//		}
+//		return 0.1 + 0.1 * waterCount - 0.01 * groundCount;
 	}
     
     private double getWaterProbability(Field field, int row, int col) {

@@ -49,7 +49,7 @@ public class Antelope extends Prey {
     }
 
 	@Override
-	public void act(List<Animal> newAntelopes) {
+	public void act(List<FieldObject> newAntelopes) {
 		incrementAge(MAX_AGE);
         incrementHunger();
         if(isAlive()) {
@@ -75,9 +75,9 @@ public class Antelope extends Prey {
 	/**
      * Check whether or not this fox is to give birth at this step.
      * New births will be made into free adjacent locations.
-     * @param newFoxes A list to return newly born foxes.
+     * @param newAntelopes A list to return newly born foxes.
      */
-    private void giveBirth(List<Animal> newFoxes)
+    private void giveBirth(List<FieldObject> newAntelopes)
     {
         // New foxes are born into adjacent locations.
         // Get a list of adjacent free locations.
@@ -87,7 +87,7 @@ public class Antelope extends Prey {
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
             Antelope young = new Antelope(false, field, loc);
-            newFoxes.add(young);
+            newAntelopes.add(young);
         }
     }
     

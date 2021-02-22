@@ -5,6 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import src.fieldType.FieldType;
+import src.fieldType.Ground;
+import src.fieldType.Water;
+
 /**
  * Represent a rectangular grid of field positions.
  * Each position is able to store a single animal.
@@ -124,6 +128,11 @@ public class Field
         return field[row][col][1];
     }
     
+    public Object getFloorTypeAt(Location location)
+    {
+        return getFloorTypeAt(location.getRow(), location.getCol());
+    }
+    
     public Object getFloorTypeAt(int row, int col)
     {
         return field[row][col][0];
@@ -160,6 +169,49 @@ public class Field
         return free;
     }
     
+    public List<Location> getFreeWaterAdjacentLocations(Location location)
+    {
+        List<Location> free = new LinkedList<>();
+        List<Location> adjacent = adjacentLocations(location);
+        for(Location next : adjacent) {
+            if(getObjectAt(next) == null && getFloorTypeAt(next) instanceof Water) {
+                free.add(next);
+            }
+        }
+        return free;
+    }
+    
+    public List<Location> getFreeGroundAdjacentLocations(Location location)
+    {
+        List<Location> free = new LinkedList<>();
+        List<Location> adjacent = adjacentLocations(location);
+        for(Location next : adjacent) {
+            if(getObjectAt(next) == null && getFloorTypeAt(next) instanceof Ground) {
+                free.add(next);
+            }
+        }
+        return free;
+    }
+    
+    public boolean isWaterClose(Location location) {
+    	return isWaterClose(location.getRow(), location.getCol());
+    }
+    
+    public boolean isWaterClose(int row, int col) {
+    	int length = 3;
+    	for (int i = 0; i < 2*length; i++) {
+    		int rowAux = row - length + i;
+    		if(rowAux < 0 || rowAux >= this.getDepth() - 1) continue;
+			for (int j = 0; j < 2*length; j++) {
+				int colAux = col - length + j;
+				if(colAux < 0 || colAux >= this.getWidth() - 1) continue;
+				Object fieldType = getFloorTypeAt(rowAux, colAux);
+				if(fieldType instanceof Water) return true;
+			}
+		}
+    	return false;
+    }
+    
     /**
      * Try to find a free location that is adjacent to the
      * given location. If there is none, return null.
@@ -172,6 +224,30 @@ public class Field
     {
         // The available free ones.
         List<Location> free = getFreeAdjacentLocations(location);
+        if(free.size() > 0) {
+            return free.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+    
+    public Location freeGroundAdjacentLocation(Location location)
+    {
+        // The available free ones.
+        List<Location> free = getFreeGroundAdjacentLocations(location);
+        if(free.size() > 0) {
+            return free.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+    
+    public Location freeWaterAdjacentLocation(Location location)
+    {
+        // The available free ones.
+        List<Location> free = getFreeWaterAdjacentLocations(location);
         if(free.size() > 0) {
             return free.get(0);
         }

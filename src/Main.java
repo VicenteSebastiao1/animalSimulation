@@ -9,5 +9,3 @@ public class Main {
 	}
 
 }
-
-/jajajaja

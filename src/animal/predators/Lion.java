@@ -63,12 +63,13 @@ public class Lion extends Predator {
         incrementHunger();
         incrementStepsSick();
         if(isAlive()) {
-            giveBirth(newLions);            
+            giveBirth(newLions);
+            if(!this.isSick) checkIfGetsInfected();
             // Move towards a source of food if found.
             Location newLocation = findFood();
             if(newLocation == null) { 
                 // No food found - try to move to a free location.
-                newLocation = getField().freeAdjacentLocation(getLocation());
+                newLocation = getField().freeGroundAdjacentLocation(getLocation());
             }
             // See if it was possible to move.
             if(newLocation != null) {
@@ -79,6 +80,19 @@ public class Lion extends Predator {
                 setDead();
             }
         }	
+	}
+	
+	private void checkIfGetsInfected() {
+        Field field = getField();
+        List<Location> free = field.getFreeAdjacentLocations(getLocation());
+        for (Location where : free) {
+            FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+            if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < 0.07) {
+            	this.isSick = true;
+            	return;
+            }
+		}
+
 	}
 	
 	/**
@@ -114,6 +128,9 @@ public class Lion extends Predator {
         while(it.hasNext()) {
             Location where = it.next();
             FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+            if(fieldObject instanceof Plant && !this.isSick && rand.nextDouble() < 0.08) {
+            	this.isSick = true;
+            }
             if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Prey && !(fieldObject instanceof Plant)) {
             	fieldObject.setDead();
                 foodLevel += this.getFoodValue(fieldObject);

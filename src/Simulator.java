@@ -78,6 +78,7 @@ public class Simulator
         view.setColor(Ground.class, Color.RED);
         view.setColor(Water.class, Color.CYAN);
         view.setColor(Plant.class, green);
+        // TODO add the rest of the animal with colors
         
         // Setup a valid starting point.
         reset();
@@ -101,7 +102,7 @@ public class Simulator
     {
         for(int step = 1; step <= numSteps && view.isViable(field); step++) {
             simulateOneStep();
-            delay(6);   // uncomment this to run more slowly
+            delay(60);   // uncomment this to run more slowly
         }
     }
     
@@ -138,8 +139,9 @@ public class Simulator
     {
         step = 0;
         animals.clear();
-        populate();
+        field.clear();
         fillFloorTypes();
+        populate();
         // Show the starting state in the view.
         view.showStatus(step, field);
     }
@@ -150,27 +152,32 @@ public class Simulator
     private void populate()
     {
         Random rand = Randomizer.getRandom();
-        field.clear();
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
-                if(rand.nextDouble() <= LION_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Lion lion = new Lion(true, field, location);
-                    animals.add(lion);
-                }
-                else if(rand.nextDouble() <= ANTELOPE_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Antelope antelope = new Antelope(true, field, location);
-                    animals.add(antelope);
-                } else if(rand.nextDouble() <= ANTELOPE_CREATION_PROBABILITY) {
-                	Location location = new Location(row, col);
-                    Zebra zebra = new Zebra(true, field, location);
-                    animals.add(zebra);
-                } else if(rand.nextDouble() <= ANTELOPE_CREATION_PROBABILITY) {
-                	Location location = new Location(row, col);
-                    Plant plant = new Plant(field, location);
-                    animals.add(plant);
-                }
+            	if(field.getFloorTypeAt(row, col) instanceof Water) {
+            		// TODO add the animals that go into water
+            	} else {
+            		if(rand.nextDouble() <= LION_CREATION_PROBABILITY) {
+                        Location location = new Location(row, col);
+                        Lion lion = new Lion(true, field, location);
+                        animals.add(lion);
+                    }
+                    else if(rand.nextDouble() <= ANTELOPE_CREATION_PROBABILITY) {
+                        Location location = new Location(row, col);
+                        Antelope antelope = new Antelope(true, field, location);
+                        animals.add(antelope);
+                    } else if(rand.nextDouble() <= ANTELOPE_CREATION_PROBABILITY) {
+                    	Location location = new Location(row, col);
+                        Zebra zebra = new Zebra(true, field, location);
+                        animals.add(zebra);
+                    } else if(rand.nextDouble() <= ANTELOPE_CREATION_PROBABILITY) {
+                    	Location location = new Location(row, col);
+                        Plant plant = new Plant(field, location);
+                        animals.add(plant);
+                    }
+            		// TODO add the animals that go into ground
+            	}
+                
                 // else leave the location empty.
             }
         }
@@ -178,7 +185,6 @@ public class Simulator
     
     private void fillFloorTypes() {
     	Random rand = Randomizer.getRandom();
-        //field.clear();
         Double waterProb = 0.1d;
         Water water = new Water();
         Ground ground = new Ground();
@@ -205,7 +211,7 @@ public class Simulator
 
 	
 	private double getWaterProbability(int row, int col) {
-		if(row == 0 && col == 0) return 0.1;
+		if(row == 0 && col == 0) return 0.01;
 		int waterCount = 0;
 		int groundCount = 0;
 		if(row == 0) {
@@ -226,7 +232,7 @@ public class Simulator
 				}
 			}
 		}
-		return 0.1 + 0.15 * waterCount - 0.01 * groundCount;
+		return 0.1 + 0.3 * waterCount - 0.04 * groundCount;
 //		if(row == 0) {
 //			Object floorTypeObject = field.getFloorTypeAt(row, col - 1);
 //			if(floorTypeObject instanceof Water) {

@@ -1,5 +1,5 @@
 package src.fieldType;
 
-public class Ground {
+public class Ground extends FieldType {
 
 }

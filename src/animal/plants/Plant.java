@@ -7,6 +7,7 @@ import src.Location;
 import src.animal.Animal;
 import src.animal.FieldObject;
 import src.animal.predators.Hippo;
+import src.fieldType.Water;
 
 public class Plant extends FieldObject{
 	
@@ -24,14 +25,16 @@ public class Plant extends FieldObject{
 		if(!isAlive()) return;
 		Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
-        int births = breed(0, 1.0, 5);
+        double breedingProbability = 0.1;
+        if(field.isWaterClose(this.location)) {
+        	breedingProbability *= 2;
+        }
+        // TODO Don't reproduce plants on water
+        int births = breed(0, breedingProbability, 5);
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
             Plant plant = new Plant(field, loc);
             newPlants.add(plant);
         }
 	}
-    
-    
-
 }

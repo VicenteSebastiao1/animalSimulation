@@ -32,6 +32,10 @@ public abstract class Animal extends FieldObject
         this.isMale = rand.nextBoolean();
     }
     
+    public boolean isSick() {
+    	return this.isSick;
+    }
+    
     protected void incrementAge(Integer max_age)
     {
         age++;

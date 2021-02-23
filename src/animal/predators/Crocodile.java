@@ -20,7 +20,7 @@ import src.animal.prey.Giraffe;
 import src.animal.prey.Zebra;
 
 public class Crocodile extends Predator {
-	// The age at which a Crocodile can start to breed.
+// The age at which a Crocodile can start to breed.
     private static final int BREEDING_AGE = 30;
     // The age to which a Crocodile can live.
     private static final int MAX_AGE = 500;
@@ -33,6 +33,7 @@ public class Crocodile extends Predator {
     private static final int ANTELOPE_FOOD_VALUE = 2;
     private static final int GIRAFFE_FOOD_VALUE = 10;
     private static final int ZEBRA_FOOD_VALUE = 4;
+    private static final double PROB_GETS_INFECTED = 0.3;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
 
@@ -44,7 +45,7 @@ public class Crocodile extends Predator {
             foodLevel = rand.nextInt(GIRAFFE_FOOD_VALUE);
             this.isSick = rand.nextDouble() < 0.1;
             if(this.isSick) {
-            	this.stepsBeingSick = rand.nextInt(1000);
+            this.stepsBeingSick = rand.nextInt(1000);
             }
         }
         else {
@@ -54,16 +55,16 @@ public class Crocodile extends Predator {
         }
     }
 
-	@Override
-	public void act(List<FieldObject> newCrocodiles) {
-		incrementAge(MAX_AGE);
+@Override
+public void act(List<FieldObject> newCrocodiles) {
+incrementAge(MAX_AGE);
         incrementHunger();
         incrementStepsSick();
         if(isAlive()) {
             giveBirth(newCrocodiles);            
             // Move towards a source of food if found.
             Location newLocation = findFood();
-            if(newLocation == null) { 
+            if(newLocation == null) {
                 // No food found - try to move to a free location.
                 newLocation = getField().freeAdjacentLocation(getLocation());
             }
@@ -75,16 +76,29 @@ public class Crocodile extends Predator {
                 // Overcrowding.
                 setDead();
             }
-        }	
-	}
-	/**
+        }
+}
+
+private void checkIfGetsInfected() {
+    Field field = getField();
+    List<Location> free = field.getFreeAdjacentLocations(getLocation());
+    for (Location where : free) {
+        FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+        if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
+        this.isSick = true;
+        return;
+        }
+}
+
+}
+/**
      * Check whether or not this fox is to give birth at this step.
      * New births will be made into free adjacent locations.
      * @param newFoxes A list to return newly born foxes.
      */
     private void giveBirth(List<FieldObject> newCrocodiles)
     {
-    	if(this.isMale) return;
+    if(this.isMale) return;
         // New foxes are born into adjacent locations.
         // Get a list of adjacent free locations.
         Field field = getField();
@@ -96,7 +110,7 @@ public class Crocodile extends Predator {
             newCrocodiles.add(young);
         }
     }
-    
+   
     /**
      * Look for rabbits adjacent to the current location.
      * Only the first live rabbit is eaten.
@@ -111,23 +125,23 @@ public class Crocodile extends Predator {
             Location where = it.next();
             FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
             if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Prey && !(fieldObject instanceof Plant)) {
-            	fieldObject.setDead();
+            fieldObject.setDead();
                 foodLevel += this.getFoodValue(fieldObject);
                 return where;
             }
         }
         return null;
     }
-    
+   
     private int getFoodValue(FieldObject fieldObject) {
-    	if(fieldObject instanceof Zebra) {
-    		return ZEBRA_FOOD_VALUE;
-    	} else if(fieldObject instanceof Antelope) {
-    		return ANTELOPE_FOOD_VALUE;
-    	} else if(fieldObject instanceof Giraffe) {
-    		return GIRAFFE_FOOD_VALUE;
-    	}
-    	throw new NoSuchElementException("Crocodiles cannot eat " + fieldObject.getClass());
+    if(fieldObject instanceof Zebra) {
+    return ZEBRA_FOOD_VALUE;
+    } else if(fieldObject instanceof Antelope) {
+    return ANTELOPE_FOOD_VALUE;
+    } else if(fieldObject instanceof Giraffe) {
+    return GIRAFFE_FOOD_VALUE;
+    }
+    throw new NoSuchElementException("Crocodiles cannot eat " + fieldObject.getClass());
     }
 
 }

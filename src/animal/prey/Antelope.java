@@ -17,8 +17,8 @@ import src.animal.plants.Plant;
 import src.animal.predators.Lion;
 
 public class Antelope extends Prey {
-	
-	// The age at which a Antelope can start to breed.
+
+// The age at which a Antelope can start to breed.
     private static final int BREEDING_AGE = 5;
     // The age to which a Antelope can live.
     private static final int MAX_AGE = 40;
@@ -29,9 +29,12 @@ public class Antelope extends Prey {
     // The food value of a single prey. In effect, this is the
     // number of steps an Antelope can go before it has to eat again.
     private static final int PLANT_FOOD_VALUE = 6;
+    
+    private static final double PROB_GETS_INFECTED = 0.2;
+
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
-	
+
 
     public Antelope(boolean randomAge, Field field, Location location)
     {
@@ -48,15 +51,15 @@ public class Antelope extends Prey {
         }
     }
 
-	@Override
-	public void act(List<FieldObject> newAntelopes) {
-		incrementAge(MAX_AGE);
+@Override
+public void act(List<FieldObject> newAntelopes) {
+incrementAge(MAX_AGE);
         incrementHunger();
         if(isAlive()) {
             giveBirth(newAntelopes);            
             // Move towards a source of food if found.
             Location newLocation = findFood();
-            if(newLocation == null) { 
+            if(newLocation == null) {
                 // No food found - try to move to a free location.
                 newLocation = getField().freeAdjacentLocation(getLocation());
             }
@@ -69,10 +72,23 @@ public class Antelope extends Prey {
                 setDead();
             }
         }
-		
-	}
-	
-	/**
+
+}
+
+private void checkIfGetsInfected() {
+    Field field = getField();
+    List<Location> free = field.getFreeAdjacentLocations(getLocation());
+    for (Location where : free) {
+        FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+        if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
+        this.isSick = true;
+        return;
+        }
+}
+
+}
+
+/**
      * Check whether or not this fox is to give birth at this step.
      * New births will be made into free adjacent locations.
      * @param newAntelopes A list to return newly born foxes.
@@ -90,7 +106,7 @@ public class Antelope extends Prey {
             newAntelopes.add(young);
         }
     }
-    
+   
     /**
      * Look for rabbits adjacent to the current location.
      * Only the first live rabbit is eaten.
@@ -105,19 +121,19 @@ public class Antelope extends Prey {
             Location where = it.next();
             FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
             if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant) {
-            	fieldObject.setDead();
+            fieldObject.setDead();
                 foodLevel += this.getFoodValue(fieldObject);
                 return where;
             }
         }
         return null;
     }
-    
+   
     private int getFoodValue(FieldObject fieldObject) {
-    	if(fieldObject instanceof Plant) {
-    		return PLANT_FOOD_VALUE;
-    	} 
-    	throw new NoSuchElementException("Antelopes cannot eat " + fieldObject.getClass());
+    if(fieldObject instanceof Plant) {
+    return PLANT_FOOD_VALUE;
+    }
+    throw new NoSuchElementException("Antelopes cannot eat " + fieldObject.getClass());
     }
 
 }

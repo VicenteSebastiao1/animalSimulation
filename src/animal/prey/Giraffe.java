@@ -16,7 +16,7 @@ import src.animal.Prey;
 import src.animal.plants.Plant;
 
 public class Giraffe extends Prey{
-	// The age at which a Zebra can start to breed.
+// The age at which a Zebra can start to breed.
     private static final int BREEDING_AGE = 8;
     // The age to which a Zebra can live.
     private static final int MAX_AGE = 75;
@@ -28,8 +28,10 @@ public class Giraffe extends Prey{
     // number of steps a Giraffe can go before it has to eat again.
     private static final int PLANT_FOOD_VALUE = 10;
     // A shared random number generator to control breeding.
+    private static final double PROB_GETS_INFECTED = 0.12;
+
     private static final Random rand = Randomizer.getRandom();
-	
+
 
     public Giraffe(boolean randomAge, Field field, Location location)
     {
@@ -46,15 +48,15 @@ public class Giraffe extends Prey{
         }
     }
 
-	@Override
-	public void act(List<FieldObject> newGiraffes) {
-		incrementAge(MAX_AGE);
+@Override
+public void act(List<FieldObject> newGiraffes) {
+incrementAge(MAX_AGE);
         incrementHunger();
         if(isAlive()) {
             giveBirth(newGiraffes);            
             // Move towards a source of food if found.
             Location newLocation = findFood();
-            if(newLocation == null) { 
+            if(newLocation == null) {
                 // No food found - try to move to a free location.
                 newLocation = getField().freeAdjacentLocation(getLocation());
             }
@@ -67,10 +69,23 @@ public class Giraffe extends Prey{
                 setDead();
             }
         }
-		
-	}
-	
-	/**
+
+}
+
+private void checkIfGetsInfected() {
+    Field field = getField();
+    List<Location> free = field.getFreeAdjacentLocations(getLocation());
+    for (Location where : free) {
+        FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+        if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
+        this.isSick = true;
+        return;
+        }
+}
+
+}
+
+/**
      * Check whether or not this fox is to give birth at this step.
      * New births will be made into free adjacent locations.
      * @param newFoxes A list to return newly born foxes.
@@ -88,7 +103,7 @@ public class Giraffe extends Prey{
             newGiraffes.add(young);
         }
     }
-    
+   
     /**
      * Look for rabbits adjacent to the current location.
      * Only the first live rabbit is eaten.
@@ -103,19 +118,19 @@ public class Giraffe extends Prey{
             Location where = it.next();
             FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
             if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant) {
-            	fieldObject.setDead();
+            fieldObject.setDead();
                 foodLevel += this.getFoodValue(fieldObject);
                 return where;
             }
         }
         return null;
     }
-    
+   
     private int getFoodValue(FieldObject fieldObject) {
-    	if(fieldObject instanceof Plant) {
-    		return PLANT_FOOD_VALUE;
-    	} 
-    	throw new NoSuchElementException("Giraffe cannot eat " + fieldObject.getClass());
+    if(fieldObject instanceof Plant) {
+    return PLANT_FOOD_VALUE;
+    }
+    throw new NoSuchElementException("Giraffe cannot eat " + fieldObject.getClass());
     }
 
 }

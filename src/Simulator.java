@@ -6,8 +6,11 @@ import src.animal.FieldObject;
 import src.animal.Fox;
 import src.animal.Rabbit;
 import src.animal.plants.Plant;
+import src.animal.predators.Crocodile;
+import src.animal.predators.Hippo;
 import src.animal.predators.Lion;
 import src.animal.prey.Antelope;
+import src.animal.prey.Giraffe;
 import src.animal.prey.Zebra;
 import src.fieldType.Ground;
 import src.fieldType.Water;
@@ -30,10 +33,13 @@ public class Simulator
     private static final int DEFAULT_WIDTH = 120;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
-    // The probability that a fox will be created in any given grid position.
+    // The probability that a Lion will be created in any given grid position.
     private static final double LION_CREATION_PROBABILITY = 0.02;
-    // The probability that a rabbit will be created in any given grid position.
-    private static final double ANTELOPE_CREATION_PROBABILITY = 0.08;    
+    // The probability that a Antelope will be created in any given grid position.
+    private static final double ANTELOPE_CREATION_PROBABILITY = 0.08;
+    // The probability that a Zebra will be created in any given grid position.
+ //   private static final double ZEBRA_CREATION_PROBABILITY = 0.10;
+
 
     // List of animals in the field.
     private List<FieldObject> animals;
@@ -72,12 +78,18 @@ public class Simulator
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
         Color green = new Color(0, 255, 0);
+        Color crocgreen = new Color(74,67,0);
+        
         view.setColor(Antelope.class, Color.ORANGE);
-        view.setColor(Lion.class, Color.BLUE);
+        view.setColor(Giraffe.class, Color.YELLOW);
         view.setColor(Zebra.class, Color.BLACK);
+        view.setColor(Lion.class, Color.BLUE);
+        view.setColor(Hippo.class, Color.MAGENTA);
+        view.setColor(Crocodile.class, crocgreen);
         view.setColor(Ground.class, Color.RED);
         view.setColor(Water.class, Color.CYAN);
         view.setColor(Plant.class, green);
+        
         // TODO add the rest of the animal with colors
         
         // Setup a valid starting point.

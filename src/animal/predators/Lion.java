@@ -22,8 +22,8 @@ import src.animal.prey.Giraffe;
 import src.animal.prey.Zebra;
 
 public class Lion extends Predator {
-	
-	// The age at which a Lion can start to breed.
+
+// The age at which a Lion can start to breed.
     private static final int BREEDING_AGE = 15;
     // The age to which a Lion can live.
     private static final int MAX_AGE = 150;
@@ -36,6 +36,7 @@ public class Lion extends Predator {
     private static final int ANTELOPE_FOOD_VALUE = 9;
     private static final int GIRAFFE_FOOD_VALUE = 9;
     private static final int ZEBRA_FOOD_VALUE = 9;
+    private static final double PROB_GETS_INFECTED = 0.07;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
 
@@ -47,7 +48,7 @@ public class Lion extends Predator {
             foodLevel = rand.nextInt(ANTELOPE_FOOD_VALUE);
             this.isSick = rand.nextDouble() < 0.1;
             if(this.isSick) {
-            	this.stepsBeingSick = rand.nextInt(1000);
+            this.stepsBeingSick = rand.nextInt(1000);
             }
         }
         else {
@@ -57,9 +58,9 @@ public class Lion extends Predator {
         }
     }
 
-	@Override
-	public void act(List<FieldObject> newLions) {
-		incrementAge(MAX_AGE);
+@Override
+public void act(List<FieldObject> newLions) {
+incrementAge(MAX_AGE);
         incrementHunger();
         incrementStepsSick();
         if(isAlive()) {
@@ -67,7 +68,7 @@ public class Lion extends Predator {
             if(!this.isSick) checkIfGetsInfected();
             // Move towards a source of food if found.
             Location newLocation = findFood();
-            if(newLocation == null) { 
+            if(newLocation == null) {
                 // No food found - try to move to a free location.
                 newLocation = getField().freeGroundAdjacentLocation(getLocation());
             }
@@ -79,30 +80,30 @@ public class Lion extends Predator {
                 // Overcrowding.
                 setDead();
             }
-        }	
-	}
-	
-	private void checkIfGetsInfected() {
+        }
+}
+
+private void checkIfGetsInfected() {
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
         for (Location where : free) {
             FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-            if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < 0.07) {
-            	this.isSick = true;
-            	return;
+            if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
+            this.isSick = true;
+            return;
             }
-		}
+}
 
-	}
-	
-	/**
+}
+
+/**
      * Check whether or not this fox is to give birth at this step.
      * New births will be made into free adjacent locations.
      * @param newFoxes A list to return newly born foxes.
      */
     private void giveBirth(List<FieldObject> newLions)
     {
-    	if(this.isMale) return;
+    if(this.isMale) return;
         // New foxes are born into adjacent locations.
         // Get a list of adjacent free locations.
         Field field = getField();
@@ -114,7 +115,7 @@ public class Lion extends Predator {
             newLions.add(young);
         }
     }
-    
+   
     /**
      * Look for rabbits adjacent to the current location.
      * Only the first live rabbit is eaten.
@@ -129,26 +130,26 @@ public class Lion extends Predator {
             Location where = it.next();
             FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
             if(fieldObject instanceof Plant && !this.isSick && rand.nextDouble() < 0.08) {
-            	this.isSick = true;
+            this.isSick = true;
             }
             if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Prey && !(fieldObject instanceof Plant)) {
-            	fieldObject.setDead();
+            fieldObject.setDead();
                 foodLevel += this.getFoodValue(fieldObject);
                 return where;
             }
         }
         return null;
     }
-    
+   
     private int getFoodValue(FieldObject fieldObject) {
-    	if(fieldObject instanceof Zebra) {
-    		return ZEBRA_FOOD_VALUE;
-    	} else if(fieldObject instanceof Antelope) {
-    		return ANTELOPE_FOOD_VALUE;
-    	} else if(fieldObject instanceof Giraffe) {
-    		return GIRAFFE_FOOD_VALUE;
-    	}
-    	throw new NoSuchElementException("Lions cannot eat " + fieldObject.getClass());
+    if(fieldObject instanceof Zebra) {
+    return ZEBRA_FOOD_VALUE;
+    } else if(fieldObject instanceof Antelope) {
+    return ANTELOPE_FOOD_VALUE;
+    } else if(fieldObject instanceof Giraffe) {
+    return GIRAFFE_FOOD_VALUE;
+    }
+    throw new NoSuchElementException("Lions cannot eat " + fieldObject.getClass());
     }
 
 }

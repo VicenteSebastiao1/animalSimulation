@@ -56,7 +56,7 @@ public class Crocodile extends Predator {
     }
 
 @Override
-public void act(List<FieldObject> newCrocodiles) {
+public void act(List<FieldObject> newCrocodiles, int stepCount) {
 incrementAge(MAX_AGE);
         incrementHunger();
         incrementStepsSick();

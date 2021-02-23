@@ -49,7 +49,7 @@ public class Giraffe extends Prey{
     }
 
 @Override
-public void act(List<FieldObject> newGiraffes) {
+public void act(List<FieldObject> newGiraffes, int stepCount) {
 incrementAge(MAX_AGE);
         incrementHunger();
         if(isAlive()) {

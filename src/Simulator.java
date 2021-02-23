@@ -58,6 +58,10 @@ public class Simulator
         this(DEFAULT_DEPTH, DEFAULT_WIDTH);
     }
     
+    public int getStep() {
+    	return this.step;
+    }
+    
     /**
      * Create a simulation field with the given size.
      * @param depth Depth of the field. Must be greater than zero.
@@ -126,13 +130,13 @@ public class Simulator
     public void simulateOneStep()
     {
         step++;
-
+        field.randomizeRain();
         // Provide space for newborn animals.
         List<FieldObject> newAnimals = new ArrayList<>();        
         // Let all rabbits act.
         for(Iterator<FieldObject> it = animals.iterator(); it.hasNext(); ) {
             FieldObject fieldObject = it.next();
-            fieldObject.act(newAnimals);
+            fieldObject.act(newAnimals, step);
             if(! fieldObject.isAlive()) {
                 it.remove();
             }

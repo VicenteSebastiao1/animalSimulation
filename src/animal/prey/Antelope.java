@@ -18,122 +18,123 @@ import src.animal.predators.Lion;
 
 public class Antelope extends Prey {
 
-// The age at which a Antelope can start to breed.
-    private static final int BREEDING_AGE = 5;
-    // The age to which a Antelope can live.
-    private static final int MAX_AGE = 40;
-    // The likelihood of a Antelope breeding.
-    private static final double BREEDING_PROBABILITY = 0.15;
-    // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 2;
-    // The food value of a single prey. In effect, this is the
-    // number of steps an Antelope can go before it has to eat again.
-    private static final int PLANT_FOOD_VALUE = 6;
-    
-    private static final double PROB_GETS_INFECTED = 0.2;
+	// The age at which a Antelope can start to breed.
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 5;
+	// The age to which a Antelope can live.
+	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 40;
+	// The likelihood of a Antelope breeding.
+	private static final double BREEDING_PROBABILITY = 0.1;
+	// The maximum number of births.
+	private static final int MAX_LITTER_SIZE = 2;
+	// The food value of a single prey. In effect, this is the
+	// number of steps an Antelope can go before it has to eat again.
+	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.01);
 
-    // A shared random number generator to control breeding.
-    private static final Random rand = Randomizer.getRandom();
+	private static final double PROB_GETS_INFECTED = 0.2;
+
+	// A shared random number generator to control breeding.
+	private static final Random rand = Randomizer.getRandom();
 
 
-    public Antelope(boolean randomAge, Field field, Location location)
-    {
-        super(field, location);
-        if(randomAge) {
-            age = rand.nextInt(MAX_AGE);
-            foodLevel = rand.nextInt(PLANT_FOOD_VALUE);
-            this.isSick = rand.nextDouble() < 0.1;
-        }
-        else {
-            age = 0;
-            foodLevel = PLANT_FOOD_VALUE;
-            this.isSick = false;
-        }
-    }
+	public Antelope(boolean randomAge, Field field, Location location)
+	{
+		super(field, location);
+		if(randomAge) {
+			age = rand.nextInt(MAX_AGE);
+			foodLevel = rand.nextInt(PLANT_FOOD_VALUE);
+			this.isSick = rand.nextDouble() < 0.1;
+		}
+		else {
+			age = 0;
+			foodLevel = PLANT_FOOD_VALUE;
+			this.isSick = false;
+		}
+	}
 
-@Override
-public void act(List<FieldObject> newAntelopes) {
-incrementAge(MAX_AGE);
-        incrementHunger();
-        if(isAlive()) {
-            giveBirth(newAntelopes);            
-            // Move towards a source of food if found.
-            Location newLocation = findFood();
-            if(newLocation == null) {
-                // No food found - try to move to a free location.
-                newLocation = getField().freeAdjacentLocation(getLocation());
-            }
-            // See if it was possible to move.
-            if(newLocation != null) {
-                setLocation(newLocation);
-            }
-            else {
-                // Overcrowding.
-                setDead();
-            }
-        }
+	@Override
+	public void act(List<FieldObject> newAntelopes, int stepCount) {
+		incrementAge(MAX_AGE);
+		incrementHunger();
+		if(isAlive()) {
+			giveBirth(newAntelopes);            
+			// Move towards a source of food if found.
+			if(!getField().isDayTime(stepCount)) return;
+			Location newLocation = findFood();
+			if(newLocation == null) {
+				// No food found - try to move to a free location.
+				newLocation = getField().freeAdjacentLocation(getLocation());
+			}
+			// See if it was possible to move.
+			if(newLocation != null) {
+				setLocation(newLocation);
+			}
+			else {
+				// Overcrowding.
+				setDead();
+			}
+		}
 
-}
+	}
 
-private void checkIfGetsInfected() {
-    Field field = getField();
-    List<Location> free = field.getFreeAdjacentLocations(getLocation());
-    for (Location where : free) {
-        FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-        if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
-        this.isSick = true;
-        return;
-        }
-}
+	private void checkIfGetsInfected() {
+		Field field = getField();
+		List<Location> free = field.getFreeAdjacentLocations(getLocation());
+		for (Location where : free) {
+			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
+				this.isSick = true;
+				return;
+			}
+		}
 
-}
+	}
 
-/**
-     * Check whether or not this fox is to give birth at this step.
-     * New births will be made into free adjacent locations.
-     * @param newAntelopes A list to return newly born foxes.
-     */
-    private void giveBirth(List<FieldObject> newAntelopes)
-    {
-        // New foxes are born into adjacent locations.
-        // Get a list of adjacent free locations.
-        Field field = getField();
-        List<Location> free = field.getFreeAdjacentLocations(getLocation());
-        int births = breed(BREEDING_AGE, BREEDING_PROBABILITY, MAX_LITTER_SIZE);
-        for(int b = 0; b < births && free.size() > 0; b++) {
-            Location loc = free.remove(0);
-            Antelope young = new Antelope(false, field, loc);
-            newAntelopes.add(young);
-        }
-    }
-   
-    /**
-     * Look for rabbits adjacent to the current location.
-     * Only the first live rabbit is eaten.
-     * @return Where food was found, or null if it wasn't.
-     */
-    private Location findFood()
-    {
-        Field field = getField();
-        List<Location> adjacent = field.adjacentLocations(getLocation());
-        Iterator<Location> it = adjacent.iterator();
-        while(it.hasNext()) {
-            Location where = it.next();
-            FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-            if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant) {
-            fieldObject.setDead();
-                foodLevel += this.getFoodValue(fieldObject);
-                return where;
-            }
-        }
-        return null;
-    }
-   
-    private int getFoodValue(FieldObject fieldObject) {
-    if(fieldObject instanceof Plant) {
-    return PLANT_FOOD_VALUE;
-    }
-    throw new NoSuchElementException("Antelopes cannot eat " + fieldObject.getClass());
-    }
+	/**
+	 * Check whether or not this fox is to give birth at this step.
+	 * New births will be made into free adjacent locations.
+	 * @param newAntelopes A list to return newly born foxes.
+	 */
+	private void giveBirth(List<FieldObject> newAntelopes)
+	{
+		// New foxes are born into adjacent locations.
+		// Get a list of adjacent free locations.
+		Field field = getField();
+		List<Location> free = field.getFreeAdjacentLocations(getLocation());
+		int births = breed(BREEDING_AGE, BREEDING_PROBABILITY, MAX_LITTER_SIZE);
+		for(int b = 0; b < births && free.size() > 0; b++) {
+			Location loc = free.remove(0);
+			Antelope young = new Antelope(false, field, loc);
+			newAntelopes.add(young);
+		}
+	}
+
+	/**
+	 * Look for rabbits adjacent to the current location.
+	 * Only the first live rabbit is eaten.
+	 * @return Where food was found, or null if it wasn't.
+	 */
+	private Location findFood()
+	{
+		Field field = getField();
+		List<Location> adjacent = field.adjacentLocations(getLocation());
+		Iterator<Location> it = adjacent.iterator();
+		while(it.hasNext()) {
+			Location where = it.next();
+			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+			if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant) {
+				fieldObject.setDead();
+				foodLevel += this.getFoodValue(fieldObject);
+				return where;
+			}
+		}
+		return null;
+	}
+
+	private int getFoodValue(FieldObject fieldObject) {
+		if(fieldObject instanceof Plant) {
+			return PLANT_FOOD_VALUE;
+		}
+		throw new NoSuchElementException("Antelopes cannot eat " + fieldObject.getClass());
+	}
 
 }

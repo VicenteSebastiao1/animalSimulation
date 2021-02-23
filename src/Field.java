@@ -24,6 +24,10 @@ public class Field
     private int depth, width;
     // Storage for the animals.
     private Object[][][] field;
+    private boolean isRaining;
+    private int daysUntilStopsRaining;
+    private double rainingProb = 0.2;
+    public static final int FULL_DAY_LENGTH = 1440;
 
     /**
      * Represent a field of the given dimensions.
@@ -37,6 +41,28 @@ public class Field
         field = new Object[depth][width][2];
     }
     
+    public boolean isDayTime(int stepCount) {
+    	int dayTimeConstant = (int) Math.floor(FULL_DAY_LENGTH * 0.7);
+    	return (stepCount % FULL_DAY_LENGTH) < dayTimeConstant;
+    }
+    
+    public void randomizeRain() {
+    	if(this.isRaining) {
+    		daysUntilStopsRaining--;
+    		this.isRaining = daysUntilStopsRaining > 0;
+    	} else {
+    		this.isRaining = rand.nextDouble() < rainingProb;
+    		if(this.isRaining) {
+    			daysUntilStopsRaining = rand.nextInt(50);
+    			System.out.println(this.daysUntilStopsRaining);
+    		}
+    	}
+    	
+    }
+    
+    public boolean isRaining() {
+    	return this.isRaining;
+    }
     /**
      * Empty the field.
      */

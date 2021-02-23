@@ -16,18 +16,21 @@ public Plant(Field field, Location location)
     super(field, location);
     }
 
-@Override
-public void act(List<FieldObject> newPlants) {
-this.reproduce(newPlants);
-}
+	@Override
+	public void act(List<FieldObject> newPlants, int stepCount) {
+		this.reproduce(newPlants);
+	}
 
-public void reproduce(List<FieldObject> newPlants) {
-if(!isAlive()) return;
-Field field = getField();
+	public void reproduce(List<FieldObject> newPlants) {
+		if(!isAlive()) return;
+		Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
         double breedingProbability = 0.15;
         if(field.isWaterClose(this.location)) {
-        breedingProbability *= 2;
+        	breedingProbability *= 2;
+        }
+        if(field.isRaining()) {
+        	breedingProbability += 0.1;
         }
         // TODO Don't reproduce plants on water
         int births = breed(0, breedingProbability, 5);

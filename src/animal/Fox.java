@@ -66,7 +66,7 @@ public class Fox extends Animal
      * @param field The field currently occupied.
      * @param newFoxes A list to return newly born foxes.
      */
-    public void act(List<FieldObject> newFoxes)
+    public void act(List<FieldObject> newFoxes, int stepCount)
     {
         incrementAge(MAX_AGE);
         incrementHunger();

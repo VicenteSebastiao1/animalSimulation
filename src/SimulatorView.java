@@ -107,7 +107,7 @@ public class SimulatorView extends JFrame
             setVisible(true);
         }
             
-        stepLabel.setText(STEP_PREFIX + step);
+        stepLabel.setText(STEP_PREFIX + step + ". Is raining: " + field.isRaining() + ". Is it day? " + field.isDayTime(step));
         stats.reset();
         
         fieldView.preparePaint();

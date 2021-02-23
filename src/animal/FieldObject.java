@@ -29,7 +29,7 @@ public abstract class FieldObject {
      * whatever it wants/needs to do.
      * @param newAnimals A list to receive newly born animals.
      */
-    abstract public void act(List<FieldObject> newAnimals);
+    abstract public void act(List<FieldObject> newAnimals, int stepCount);
     
     /**
      * Check whether the animal is alive or not.

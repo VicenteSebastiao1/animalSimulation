@@ -49,7 +49,7 @@ public class Zebra extends Prey{
     }
 
 @Override
-public void act(List<FieldObject> newZebras) {
+public void act(List<FieldObject> newZebras, int stepCount) {
 incrementAge(MAX_AGE);
         incrementHunger();
         if(isAlive()) {

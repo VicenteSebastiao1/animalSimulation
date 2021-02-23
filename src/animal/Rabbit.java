@@ -53,7 +53,7 @@ public class Rabbit extends Animal
      * around. Sometimes it will breed or die of old age.
      * @param newRabbits A list to return newly born rabbits.
      */
-    public void act(List<FieldObject> newRabbits)
+    public void act(List<FieldObject> newRabbits, int stepCount)
     {
         incrementAge();
         if(isAlive()) {

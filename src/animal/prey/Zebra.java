@@ -17,16 +17,16 @@ import src.animal.plants.Plant;
 
 public class Zebra extends Prey{
 	// The age at which a Zebra can start to breed.
-	private static final int BREEDING_AGE = 1;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 5;
 	// The age to which a Zebra can live.
-	private static final int MAX_AGE = 50;
+	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 40;
 	// The likelihood of a Zebra breeding.
 	private static final double BREEDING_PROBABILITY = 0.08;
 	// The maximum number of births.
 	private static final int MAX_LITTER_SIZE = 1;
 	// The food value of a single prey. In effect, this is the
 	// number of steps a Zebra can go before it has to eat again.
-	private static final int PLANT_FOOD_VALUE = 5;
+	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.01); // 1440 * 0.001 = 1.4
 	// Probability of getting sick on contact with sick animals.
 	private static final double PROB_GETS_INFECTED = 0.8;
 	// A shared random number generator to control breeding.
@@ -38,12 +38,12 @@ public class Zebra extends Prey{
 		super(field, location);
 		if(randomAge) {
 			age = rand.nextInt(MAX_AGE);
-			foodLevel = rand.nextInt(PLANT_FOOD_VALUE);
+			foodLevel = rand.nextInt((int) Math.floor(Field.FULL_DAY_LENGTH * 0.1));
 			this.isSick = rand.nextDouble() < 0.1;
 		}
 		else {
 			age = 0;
-			foodLevel = PLANT_FOOD_VALUE;
+			foodLevel = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.01);
 			this.isSick = false;
 		}
 	}
@@ -54,6 +54,7 @@ public class Zebra extends Prey{
 		incrementHunger();
 		if(isAlive()) {
 			giveBirth(newZebras);            
+			if(!getField().isDayTime(stepCount)) return;
 			// Move towards a source of food if found.
 			Location newLocation = findFood();
 			if(newLocation == null) {

@@ -57,8 +57,8 @@ public class Antelope extends Prey {
 		incrementHunger();
 		if(isAlive()) {
 			giveBirth(newAntelopes);            
-			// Move towards a source of food if found.
 			if(!getField().isDayTime(stepCount)) return;
+			// Move towards a source of food if found.
 			Location newLocation = findFood();
 			if(newLocation == null) {
 				// No food found - try to move to a free location.

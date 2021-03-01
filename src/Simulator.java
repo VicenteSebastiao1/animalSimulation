@@ -3,8 +3,6 @@ import java.util.Random;
 
 import src.animal.Animal;
 import src.animal.FieldObject;
-import src.animal.Fox;
-import src.animal.Rabbit;
 import src.animal.plants.Plant;
 import src.animal.predators.Crocodile;
 import src.animal.predators.Hippo;
@@ -33,12 +31,28 @@ public class Simulator
     private static final int DEFAULT_WIDTH = 120;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
+    
+    //PREDATORS:
     // The probability that a Lion will be created in any given grid position.
     private static final double LION_CREATION_PROBABILITY = 0.02;
+    // The probability that a Crocodile will be created in any given grid position.
+    private static final double CROCODILE_CREATION_PROBABILITY = 0.015;
+    // The probability that a hippo will be created in any given grid position.
+    private static final double HIPPO_CREATION_PROBABILITY = 0.015;
+
+    //PREYS:
     // The probability that a Antelope will be created in any given grid position.
     private static final double ANTELOPE_CREATION_PROBABILITY = 0.08;
     // The probability that a Zebra will be created in any given grid position.
- //   private static final double ZEBRA_CREATION_PROBABILITY = 0.10;
+    private static final double ZEBRA_CREATION_PROBABILITY = 0.10;
+    // The probability that a Giraffe will be created in any given grid position.
+    private static final double GIRAFFE_CREATION_PROBABILITY = 0.03;
+    
+    //Plants
+    // The probability that a plant will be created in any given grid position.
+    private static final double PLANT_CREATION_PROBABILITY = 0.01;
+
+
 
 
     // List of animals in the field.
@@ -163,41 +177,51 @@ public class Simulator
     }
     
     /**
-     * Randomly populate the field with foxes and rabbits.
+     * Randomly populate the field with animals.
      */
-    private void populate()
-    {
-        Random rand = Randomizer.getRandom();
-        for(int row = 0; row < field.getDepth(); row++) {
-            for(int col = 0; col < field.getWidth(); col++) {
-            	if(field.getFloorTypeAt(row, col) instanceof Water) {
-            		// TODO add the animals that go into water
-            	} else {
-            		if(rand.nextDouble() <= LION_CREATION_PROBABILITY) {
-                        Location location = new Location(row, col);
-                        Lion lion = new Lion(true, field, location);
-                        animals.add(lion);
-                    }
-                    else if(rand.nextDouble() <= ANTELOPE_CREATION_PROBABILITY) {
-                        Location location = new Location(row, col);
-                        Antelope antelope = new Antelope(true, field, location);
-                        animals.add(antelope);
-                    } else if(rand.nextDouble() <= ANTELOPE_CREATION_PROBABILITY) {
-                    	Location location = new Location(row, col);
-                        Zebra zebra = new Zebra(true, field, location);
-                        animals.add(zebra);
-                    } else if(rand.nextDouble() <= ANTELOPE_CREATION_PROBABILITY) {
-                    	Location location = new Location(row, col);
-                        Plant plant = new Plant(field, location);
-                        animals.add(plant);
-                    }
-            		// TODO add the animals that go into ground
-            	}
-                
-                // else leave the location empty.
-            }
-        }
-    }
+	private void populate() {
+		Random rand = Randomizer.getRandom();
+		for (int row = 0; row < field.getDepth(); row++) {
+			for (int col = 0; col < field.getWidth(); col++) {
+				if (field.getFloorTypeAt(row, col) instanceof Water) {
+
+					if (rand.nextDouble() <= CROCODILE_CREATION_PROBABILITY) {
+						Location location = new Location(row, col);
+						Crocodile crocodile = new Crocodile(true, field, location);
+						animals.add(crocodile);
+
+					} else if (rand.nextDouble() <= HIPPO_CREATION_PROBABILITY) {
+						Location location = new Location(row, col);
+						Hippo hippo = new Hippo(true, field, location);
+						animals.add(hippo);
+
+					} else {
+						if (rand.nextDouble() <= LION_CREATION_PROBABILITY) {
+							Location location = new Location(row, col);
+							Lion lion = new Lion(true, field, location);
+							animals.add(lion);
+						} else if (rand.nextDouble() <= ANTELOPE_CREATION_PROBABILITY) {
+							Location location = new Location(row, col);
+							Antelope antelope = new Antelope(true, field, location);
+							animals.add(antelope);
+						} else if (rand.nextDouble() <= ZEBRA_CREATION_PROBABILITY) {
+							Location location = new Location(row, col);
+							Zebra zebra = new Zebra(true, field, location);
+							animals.add(zebra);
+
+						} else if (rand.nextDouble() <= PLANT_CREATION_PROBABILITY) {
+							Location location = new Location(row, col);
+							Plant plant = new Plant(field, location);
+							animals.add(plant);
+						}
+						// TODO add the animals that go into ground
+					}
+
+					// else leave the location empty.
+				}
+			}
+		}
+	}
     
     private void fillFloorTypes() {
     	Random rand = Randomizer.getRandom();

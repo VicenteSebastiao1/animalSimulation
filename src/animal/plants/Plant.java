@@ -25,12 +25,12 @@ public Plant(Field field, Location location)
 		if(!isAlive()) return;
 		Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
-        double breedingProbability = 0.15;
+        double breedingProbability = 0.00005;
         if(field.isWaterClose(this.location)) {
         	breedingProbability *= 2;
         }
         if(field.isRaining()) {
-        	breedingProbability += 0.1;
+        	breedingProbability += 0.05;
         }
         // TODO Don't reproduce plants on water
         int births = breed(0, breedingProbability, 5);

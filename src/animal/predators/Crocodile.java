@@ -21,18 +21,20 @@ import src.animal.prey.Zebra;
 
 public class Crocodile extends Predator {
 // The age at which a Crocodile can start to breed.
-    private static final int BREEDING_AGE = 30;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 15;
     // The age to which a Crocodile can live.
-    private static final int MAX_AGE = 500;
+	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 500;
     // The likelihood of a Crocodile breeding.
     private static final double BREEDING_PROBABILITY = 0.25;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 10;
     // The food value of a single rabbit. In effect, this is the
     // number of steps a Crocodile can go before it has to eat again.
-    private static final int ANTELOPE_FOOD_VALUE = 2;
-    private static final int GIRAFFE_FOOD_VALUE = 10;
-    private static final int ZEBRA_FOOD_VALUE = 4;
+    
+	private static final int ANTELOPE_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.75);
+	private static final int GIRAFFE_FOOD_VALUE = Field.FULL_DAY_LENGTH;
+	private static final int ZEBRA_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.5);
+	
     private static final double PROB_GETS_INFECTED = 0.3;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
@@ -57,27 +59,31 @@ public class Crocodile extends Predator {
 
 @Override
 public void act(List<FieldObject> newCrocodiles, int stepCount) {
-incrementAge(MAX_AGE);
-        incrementHunger();
-        incrementStepsSick();
-        if(isAlive()) {
-            giveBirth(newCrocodiles);            
-            // Move towards a source of food if found.
-            Location newLocation = findFood();
-            if(newLocation == null) {
-                // No food found - try to move to a free location.
-                newLocation = getField().freeAdjacentLocation(getLocation());
-            }
-            // See if it was possible to move.
-            if(newLocation != null) {
-                setLocation(newLocation);
-            }
-            else {
-                // Overcrowding.
-                setDead();
-            }
-        }
+	incrementAge(MAX_AGE);
+	incrementHunger();
+	incrementStepsSick();
+	if(isAlive()) {
+		giveBirth(newCrocodiles);
+		if(!this.isSick) checkIfGetsInfected();
+		// The above actions happen even though the Crocodile sleeps
+		if(!getField().isDayTime(stepCount)) return;
+		// Move towards a source of food if found.
+		Location newLocation = findFood();
+		if(newLocation == null) {
+			// No food found - try to move to a free location.
+			newLocation = getField().freeGroundAdjacentLocation(getLocation());
+		}
+		// See if it was possible to move.
+		if(newLocation != null) {
+			setLocation(newLocation);
+		}
+		else {
+			// Overcrowding.
+			setDead();
+		}
+	}
 }
+
 
 private void checkIfGetsInfected() {
     Field field = getField();

@@ -6,6 +6,7 @@ import java.util.Random;
 import src.Field;
 import src.Location;
 import src.Randomizer;
+import src.animal.plants.Plant;
 
 public abstract class FieldObject {
 	
@@ -81,7 +82,7 @@ public abstract class FieldObject {
     {
         alive = false;
         if(location != null) {
-            field.clear(location);
+            field.clearAnimal(location);
             location = null;
             field = null;
         }
@@ -102,8 +103,8 @@ public abstract class FieldObject {
      */
     protected void setLocation(Location newLocation)
     {
-        if(location != null) {
-            field.clear(location);
+        if(location != null && !(this instanceof Plant)) {
+            field.clearAnimal(location);
         }
         location = newLocation;
         field.place(this, newLocation);

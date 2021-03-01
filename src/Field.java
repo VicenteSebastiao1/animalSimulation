@@ -38,11 +38,11 @@ public class Field
     {
         this.depth = depth;
         this.width = width;
-        field = new Object[depth][width][2];
+        field = new Object[depth][width][3];
     }
     
     public boolean isDayTime(int stepCount) {
-    	int dayTimeConstant = (int) Math.floor(FULL_DAY_LENGTH * 0.7);
+    	int dayTimeConstant = (int) Math.floor(FULL_DAY_LENGTH * 0.65);
     	return (stepCount % FULL_DAY_LENGTH) < dayTimeConstant;
     }
     
@@ -68,15 +68,16 @@ public class Field
      */
     public void clear()
     {
-        clearAnimals();
+        clearAnimalsAndPlants();
         clearFloorTypes();
     }
     
-    public void clearAnimals()
+    public void clearAnimalsAndPlants()
     {
         for(int row = 0; row < depth; row++) {
             for(int col = 0; col < width; col++) {
                 field[row][col][1] = null;
+                field[row][col][2] = null;
             }
         }
     }
@@ -94,9 +95,14 @@ public class Field
      * Clear the given location.
      * @param location The location to clear.
      */
-    public void clear(Location location)
+    public void clearAnimal(Location location)
     {
         field[location.getRow()][location.getCol()][1] = null;
+    }
+    
+    public void clearPlant(Location location)
+    {
+        field[location.getRow()][location.getCol()][2] = null;
     }
     
     /**
@@ -128,6 +134,11 @@ public class Field
     	field[location.getRow()][location.getCol()][1] = animal;
     }
     
+    public void placePlant(Object plant, Location location)
+    {
+    	field[location.getRow()][location.getCol()][2] = plant;
+    }
+    
     public void setFloorType(Object floorType, Location location)
     {
         field[location.getRow()][location.getCol()][0] = floorType;
@@ -143,6 +154,11 @@ public class Field
         return getObjectAt(location.getRow(), location.getCol());
     }
     
+    public Object getPlantAt(Location location)
+    {
+        return getPlantAt(location.getRow(), location.getCol());
+    }
+    
     /**
      * Return the animal at the given location, if any.
      * @param row The desired row.
@@ -152,6 +168,11 @@ public class Field
     public Object getObjectAt(int row, int col)
     {
         return field[row][col][1];
+    }
+    
+    public Object getPlantAt(int row, int col)
+    {
+        return field[row][col][2];
     }
     
     public Object getFloorTypeAt(Location location)
@@ -213,6 +234,18 @@ public class Field
         List<Location> adjacent = adjacentLocations(location);
         for(Location next : adjacent) {
             if(getObjectAt(next) == null && getFloorTypeAt(next) instanceof Ground) {
+                free.add(next);
+            }
+        }
+        return free;
+    }
+    
+    public List<Location> getFreeFromPlantGroundAdjacentLocations(Location location)
+    {
+        List<Location> free = new LinkedList<>();
+        List<Location> adjacent = adjacentLocations(location);
+        for(Location next : adjacent) {
+            if(getPlantAt(next) == null && getFloorTypeAt(next) instanceof Ground) {
                 free.add(next);
             }
         }

@@ -23,12 +23,12 @@ public class Antelope extends Prey {
 	// The age to which a Antelope can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 40;
 	// The likelihood of a Antelope breeding.
-	private static final double BREEDING_PROBABILITY = 0.1;
+	private static final double BREEDING_PROBABILITY = 0.01;
 	// The maximum number of births.
 	private static final int MAX_LITTER_SIZE = 2;
 	// The food value of a single prey. In effect, this is the
 	// number of steps an Antelope can go before it has to eat again.
-	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.01);
+	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.01); // 1440 * 0.001 = 1.4
 
 	private static final double PROB_GETS_INFECTED = 0.2;
 
@@ -41,12 +41,12 @@ public class Antelope extends Prey {
 		super(field, location);
 		if(randomAge) {
 			age = rand.nextInt(MAX_AGE);
-			foodLevel = rand.nextInt(PLANT_FOOD_VALUE);
+			foodLevel = rand.nextInt((int) Math.floor(Field.FULL_DAY_LENGTH * 0.1));
 			this.isSick = rand.nextDouble() < 0.1;
 		}
 		else {
 			age = 0;
-			foodLevel = PLANT_FOOD_VALUE;
+			foodLevel = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.01);
 			this.isSick = false;
 		}
 	}
@@ -120,7 +120,7 @@ public class Antelope extends Prey {
 		Iterator<Location> it = adjacent.iterator();
 		while(it.hasNext()) {
 			Location where = it.next();
-			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+			FieldObject fieldObject = (FieldObject) field.getPlantAt(where);
 			if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant) {
 				fieldObject.setDead();
 				foodLevel += this.getFoodValue(fieldObject);

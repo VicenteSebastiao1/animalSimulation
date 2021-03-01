@@ -54,7 +54,6 @@ public class Field
     		this.isRaining = rand.nextDouble() < rainingProb;
     		if(this.isRaining) {
     			daysUntilStopsRaining = rand.nextInt(50);
-    			System.out.println(this.daysUntilStopsRaining);
     		}
     	}
     	
@@ -348,6 +347,10 @@ public class Field
             Collections.shuffle(locations, rand);
         }
         return locations;
+    }
+    
+    public List<Location> getAdjacentLocations(Location location) {
+    	return adjacentLocations(location);
     }
 
     /**

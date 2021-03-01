@@ -21,7 +21,7 @@ import src.animal.prey.Zebra;
 
 public class Crocodile extends Predator {
 	// The age at which a Crocodile can start to breed.
-	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 15;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 2;
 	// The age to which a Crocodile can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 500;
 	// The likelihood of a Crocodile breeding.
@@ -39,6 +39,10 @@ public class Crocodile extends Predator {
 	// A shared random number generator to control breeding.
 	private static final Random rand = Randomizer.getRandom();
 
+	public double getProbabilityGettingInfected() {
+		return PROB_GETS_INFECTED;
+	}
+	
 	public Crocodile(boolean randomAge, Field field, Location location)
 	{
 		super(field, location);
@@ -86,18 +90,18 @@ public class Crocodile extends Predator {
 	}
 
 
-	private void checkIfGetsInfected() {
-		Field field = getField();
-		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-		for (Location where : free) {
-			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
-				this.isSick = true;
-				return;
-			}
-		}
-
-	}
+//	private void checkIfGetsInfected() {
+//		Field field = getField();
+//		List<Location> free = field.getFreeAdjacentLocations(getLocation());
+//		for (Location where : free) {
+//			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+//			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
+//				this.isSick = true;
+//				return;
+//			}
+//		}
+//
+//	}
 	/**
 	 * Check whether or not this fox is to give birth at this step.
 	 * New births will be made into free adjacent locations.
@@ -125,6 +129,7 @@ public class Crocodile extends Predator {
 	 */
 	private Location findFood()
 	{
+		if(this.foodLevel > MAX_FOOD) return null;
 		Field field = getField();
 		List<Location> adjacent = field.adjacentLocations(getLocation());
 		Iterator<Location> it = adjacent.iterator();

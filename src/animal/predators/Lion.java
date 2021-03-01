@@ -39,6 +39,10 @@ public class Lion extends Predator {
 	// A shared random number generator to control breeding.
 	private static final Random rand = Randomizer.getRandom();
 
+	public double getProbabilityGettingInfected() {
+		return PROB_GETS_INFECTED;
+	}
+	
 	public Lion(boolean randomAge, Field field, Location location)
 	{
 		super(field, location);
@@ -64,7 +68,7 @@ public class Lion extends Predator {
 		incrementStepsSick();
 		if(isAlive()) {
 			giveBirth(newLions);
-			if(!this.isSick) checkIfGetsInfected();
+			if(!this.isSick) this.checkIfGetsInfected();
 			// The above actions happen even though the Lion sleeps
 			if(getField().isDayTime(stepCount)) return;
 			// Move towards a source of food if found.
@@ -84,20 +88,7 @@ public class Lion extends Predator {
 		}
 	}
 
-	private void checkIfGetsInfected() {
-		Field field = getField();
-		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-		for (Location where : free) {
-			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
-				this.isSick = true;
-				return;
-			}
-		}
-
-	}
-
-	/**
+		/**
 	 * Check whether or not this fox is to give birth at this step.
 	 * New births will be made into free adjacent locations.
 	 * @param newFoxes A list to return newly born foxes.
@@ -124,6 +115,7 @@ public class Lion extends Predator {
 	 */
 	private Location findFood()
 	{
+		if(this.foodLevel > MAX_FOOD) return null;
 		Field field = getField();
 		List<Location> adjacent = field.adjacentLocations(getLocation());
 		Iterator<Location> it = adjacent.iterator();

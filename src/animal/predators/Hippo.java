@@ -8,7 +8,6 @@ import java.util.Random;
 import src.Field;
 import src.Location;
 import src.Randomizer;
-import src.animal.Animal;
 import src.animal.FieldObject;
 import src.animal.Predator;
 import src.animal.Prey;
@@ -34,7 +33,9 @@ public class Hippo extends Predator {
 	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.1);
 	private static final double PROB_GETS_INFECTED = 0.5;
 
-
+	public double getProbabilityGettingInfected() {
+		return PROB_GETS_INFECTED;
+	}
 
 	// A shared random number generator to control breeding.
 	private static final Random rand = Randomizer.getRandom();
@@ -81,18 +82,18 @@ public class Hippo extends Predator {
 		}
 	}
 
-	private void checkIfGetsInfected() {
-		Field field = getField();
-		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-		for (Location where : free) {
-			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
-				this.isSick = true;
-				return;
-			}
-		}
-
-	}
+//	private void checkIfGetsInfected() {
+//		Field field = getField();
+//		List<Location> free = field.getFreeAdjacentLocations(getLocation());
+//		for (Location where : free) {
+//			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+//			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
+//				this.isSick = true;
+//				return;
+//			}
+//		}
+//
+//	}
 
 
 	/**
@@ -122,6 +123,7 @@ public class Hippo extends Predator {
 	 */
 	private Location findFood()
 	{
+		if(this.foodLevel > MAX_FOOD) return null;
 		Field field = getField();
 		List<Location> adjacent = field.adjacentLocations(getLocation());
 		Iterator<Location> it = adjacent.iterator();

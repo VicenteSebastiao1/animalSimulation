@@ -18,7 +18,10 @@ public abstract class Animal extends FieldObject
     protected int stepsBeingSick = 0;
     public static final Random rand = Randomizer.getRandom();
     protected int foodLevel;
-    protected static final int MAX_STEPS_SICK = 1000;
+    protected static final int MAX_STEPS_SICK = 2000;
+    protected static final int MAX_FOOD = Field.FULL_DAY_LENGTH;
+    
+    public abstract double getProbabilityGettingInfected();
     
     /**
      * Create a new animal at location in field.
@@ -58,6 +61,21 @@ public abstract class Animal extends FieldObject
             setDead();
         }
     }
+    
+    protected void checkIfGetsInfected() {
+		Field field = getField();
+		List<Location> free = field.getAdjacentLocations(getLocation());
+		for (Location where : free) {
+			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < this.getProbabilityGettingInfected()) {
+				this.isSick = true;
+				return;
+			}
+		}
+
+	}
+
+
     
     /**
      * Check whether or not this fox is to give birth at this step.

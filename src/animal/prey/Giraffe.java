@@ -26,13 +26,17 @@ public class Giraffe extends Prey{
 	private static final int MAX_LITTER_SIZE = 2;
 	// The food value of a single prey. In effect, this is the
 	// number of steps a Giraffe can go before it has to eat again.
-	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.01); // 1440 * 0.001 = 1.4
+	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.1); // 1440 * 0.001 = 1.4
+	private static final int MAX_FOOD = Field.FULL_DAY_LENGTH;
 	// A shared random number generator to control breeding.
 	private static final double PROB_GETS_INFECTED = 0.12;
 
 	private static final Random rand = Randomizer.getRandom();
 
-
+	public double getProbabilityGettingInfected() {
+		return PROB_GETS_INFECTED;
+	}
+	
 	public Giraffe(boolean randomAge, Field field, Location location)
 	{
 		super(field, location);
@@ -52,14 +56,16 @@ public class Giraffe extends Prey{
 	public void act(List<FieldObject> newGiraffes, int stepCount) {
 		incrementAge(MAX_AGE);
 		incrementHunger();
+		incrementStepsSick();
 		if(isAlive()) {
-			giveBirth(newGiraffes);            
+			giveBirth(newGiraffes);   
+			if(!this.isSick) this.checkIfGetsInfected();
 			// Move towards a source of food if found.
 			if(!getField().isDayTime(stepCount)) return;
 			Location newLocation = findFood();
 			if(newLocation == null) {
 				// No food found - try to move to a free location.
-				newLocation = getField().freeAdjacentLocation(getLocation());
+				newLocation = getField().freeGroundAdjacentLocation(getLocation());
 			}
 			// See if it was possible to move.
 			if(newLocation != null) {
@@ -73,18 +79,18 @@ public class Giraffe extends Prey{
 
 	}
 
-	private void checkIfGetsInfected() {
-		Field field = getField();
-		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-		for (Location where : free) {
-			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
-				this.isSick = true;
-				return;
-			}
-		}
-
-	}
+//	private void checkIfGetsInfected() {
+//		Field field = getField();
+//		List<Location> free = field.getFreeAdjacentLocations(getLocation());
+//		for (Location where : free) {
+//			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+//			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
+//				this.isSick = true;
+//				return;
+//			}
+//		}
+//
+//	}
 
 	/**
 	 * Check whether or not this fox is to give birth at this step.
@@ -112,6 +118,7 @@ public class Giraffe extends Prey{
 	 */
 	private Location findFood()
 	{
+		if(this.foodLevel > MAX_FOOD) return null;
 		Field field = getField();
 		List<Location> adjacent = field.adjacentLocations(getLocation());
 		Iterator<Location> it = adjacent.iterator();

@@ -34,7 +34,7 @@ public class Simulator
 
 	//PREDATORS:
 	// The probability that a Lion will be created in any given grid position.
-	private static final double LION_CREATION_PROBABILITY = 0.02;
+	private static final double LION_CREATION_PROBABILITY = 0.01;
 	// The probability that a Crocodile will be created in any given grid position.
 	private static final double CROCODILE_CREATION_PROBABILITY = 0.015;
 	// The probability that a hippo will be created in any given grid position.
@@ -42,11 +42,11 @@ public class Simulator
 
 	//PREYS:
 	// The probability that a Antelope will be created in any given grid position.
-	private static final double ANTELOPE_CREATION_PROBABILITY = 0.04;
+	private static final double ANTELOPE_CREATION_PROBABILITY = 0.01;
 	// The probability that a Zebra will be created in any given grid position.
-	private static final double ZEBRA_CREATION_PROBABILITY = 0.05;
+	private static final double ZEBRA_CREATION_PROBABILITY = 0.01;
 	// The probability that a Giraffe will be created in any given grid position.
-	private static final double GIRAFFE_CREATION_PROBABILITY = 0.03;
+	private static final double GIRAFFE_CREATION_PROBABILITY = 0.01;
 
 	//Plants
 	// The probability that a plant will be created in any given grid position.
@@ -120,7 +120,7 @@ public class Simulator
 	 */
 	public void runLongSimulation()
 	{
-		simulate(5000);
+		simulate(50000);
 	}
 
 	/**

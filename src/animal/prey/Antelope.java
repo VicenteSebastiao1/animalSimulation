@@ -19,7 +19,7 @@ import src.animal.predators.Lion;
 public class Antelope extends Prey {
 
 	// The age at which a Antelope can start to breed.
-	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 5;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 2;
 	// The age to which a Antelope can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 40;
 	// The likelihood of a Antelope breeding.
@@ -28,7 +28,9 @@ public class Antelope extends Prey {
 	private static final int MAX_LITTER_SIZE = 2;
 	// The food value of a single prey. In effect, this is the
 	// number of steps an Antelope can go before it has to eat again.
-	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.01); // 1440 * 0.001 = 1.4
+	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.1); // 1440 * 0.001 = 1.4
+	
+	private static final int MAX_FOOD = Field.FULL_DAY_LENGTH;
 
 	private static final double PROB_GETS_INFECTED = 0.2;
 
@@ -36,6 +38,10 @@ public class Antelope extends Prey {
 	private static final Random rand = Randomizer.getRandom();
 
 
+	public double getProbabilityGettingInfected() {
+		return PROB_GETS_INFECTED;
+	}
+	
 	public Antelope(boolean randomAge, Field field, Location location)
 	{
 		super(field, location);
@@ -56,13 +62,14 @@ public class Antelope extends Prey {
 		incrementAge(MAX_AGE);
 		incrementHunger();
 		if(isAlive()) {
-			giveBirth(newAntelopes);            
+			giveBirth(newAntelopes);  
+			if(!this.isSick) this.checkIfGetsInfected();
 			if(!getField().isDayTime(stepCount)) return;
 			// Move towards a source of food if found.
 			Location newLocation = findFood();
 			if(newLocation == null) {
 				// No food found - try to move to a free location.
-				newLocation = getField().freeAdjacentLocation(getLocation());
+				newLocation = getField().freeGroundAdjacentLocation(getLocation());
 			}
 			// See if it was possible to move.
 			if(newLocation != null) {
@@ -76,18 +83,18 @@ public class Antelope extends Prey {
 
 	}
 
-	private void checkIfGetsInfected() {
-		Field field = getField();
-		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-		for (Location where : free) {
-			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
-				this.isSick = true;
-				return;
-			}
-		}
-
-	}
+//	private void checkIfGetsInfected() {
+//		Field field = getField();
+//		List<Location> free = field.getFreeAdjacentLocations(getLocation());
+//		for (Location where : free) {
+//			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+//			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
+//				this.isSick = true;
+//				return;
+//			}
+//		}
+//
+//	}
 
 	/**
 	 * Check whether or not this fox is to give birth at this step.
@@ -115,6 +122,7 @@ public class Antelope extends Prey {
 	 */
 	private Location findFood()
 	{
+		if(this.foodLevel > MAX_FOOD) return null;
 		Field field = getField();
 		List<Location> adjacent = field.adjacentLocations(getLocation());
 		Iterator<Location> it = adjacent.iterator();

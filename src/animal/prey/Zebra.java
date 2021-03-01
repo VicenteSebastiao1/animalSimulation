@@ -26,12 +26,16 @@ public class Zebra extends Prey{
 	private static final int MAX_LITTER_SIZE = 1;
 	// The food value of a single prey. In effect, this is the
 	// number of steps a Zebra can go before it has to eat again.
-	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.01); // 1440 * 0.001 = 1.4
+	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.1); // 1440 * 0.001 = 1.4
+	private static final int MAX_FOOD = Field.FULL_DAY_LENGTH;
 	// Probability of getting sick on contact with sick animals.
 	private static final double PROB_GETS_INFECTED = 0.8;
 	// A shared random number generator to control breeding.
 	private static final Random rand = Randomizer.getRandom();
 
+	public double getProbabilityGettingInfected() {
+		return PROB_GETS_INFECTED;
+	}
 
 	public Zebra(boolean randomAge, Field field, Location location)
 	{
@@ -52,14 +56,16 @@ public class Zebra extends Prey{
 	public void act(List<FieldObject> newZebras, int stepCount) {
 		incrementAge(MAX_AGE);
 		incrementHunger();
+		incrementStepsSick();
 		if(isAlive()) {
-			giveBirth(newZebras);            
+			giveBirth(newZebras);        
+			if(!this.isSick) this.checkIfGetsInfected();
 			if(!getField().isDayTime(stepCount)) return;
 			// Move towards a source of food if found.
 			Location newLocation = findFood();
 			if(newLocation == null) {
 				// No food found - try to move to a free location.
-				newLocation = getField().freeAdjacentLocation(getLocation());
+				newLocation = getField().freeGroundAdjacentLocation(getLocation());
 			}
 			// See if it was possible to move.
 			if(newLocation != null) {
@@ -73,18 +79,18 @@ public class Zebra extends Prey{
 
 	}
 
-	private void checkIfGetsInfected() {
-		Field field = getField();
-		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-		for (Location where : free) {
-			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
-				this.isSick = true;
-				return;
-			}
-		}
-
-	}
+//	private void checkIfGetsInfected() {
+//		Field field = getField();
+//		List<Location> free = field.getFreeAdjacentLocations(getLocation());
+//		for (Location where : free) {
+//			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
+//			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
+//				this.isSick = true;
+//				return;
+//			}
+//		}
+//
+//	}
 
 	/**
 	 * Check whether or not this fox is to give birth at this step.
@@ -112,6 +118,7 @@ public class Zebra extends Prey{
 	 */
 	private Location findFood()
 	{
+		if(this.foodLevel > MAX_FOOD) return null;
 		Field field = getField();
 		List<Location> adjacent = field.adjacentLocations(getLocation());
 		Iterator<Location> it = adjacent.iterator();

@@ -17,7 +17,7 @@ import src.animal.plants.Plant;
 
 public class Zebra extends Prey{
 	// The age at which a Zebra can start to breed.
-	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 2;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 1;
 	// The age to which a Zebra can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 40;
 	// The likelihood of a Zebra breeding.
@@ -79,19 +79,6 @@ public class Zebra extends Prey{
 
 	}
 
-//	private void checkIfGetsInfected() {
-//		Field field = getField();
-//		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-//		for (Location where : free) {
-//			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-//			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
-//				this.isSick = true;
-//				return;
-//			}
-//		}
-//
-//	}
-
 	/**
 	 * Check whether or not this fox is to give birth at this step.
 	 * New births will be made into free adjacent locations.
@@ -126,6 +113,10 @@ public class Zebra extends Prey{
 		while(it.hasNext()) {
 			Location where = it.next();
 			FieldObject fieldObject = (FieldObject) field.getPlantAt(where);
+			//Given a chance, and upon contact with a plant, the lion might get sick.
+			if(fieldObject instanceof Plant && !this.isSick && rand.nextDouble() < 0.08) {
+				this.isSick = true;
+			}
 			if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant) {
 				fieldObject.setDead();
 				foodLevel += this.getFoodValue(fieldObject);

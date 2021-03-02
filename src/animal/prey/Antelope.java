@@ -1,7 +1,5 @@
 package src.animal.prey;
 
-import static src.animal.Animal.rand;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -10,11 +8,9 @@ import java.util.Random;
 import src.Field;
 import src.Location;
 import src.Randomizer;
-import src.animal.Animal;
 import src.animal.FieldObject;
 import src.animal.Prey;
 import src.animal.plants.Plant;
-import src.animal.predators.Lion;
 
 public class Antelope extends Prey {
 
@@ -116,6 +112,10 @@ public class Antelope extends Prey {
 		while(it.hasNext()) {
 			Location where = it.next();
 			FieldObject fieldObject = (FieldObject) field.getPlantAt(where);
+			//Given a chance, and upon contact with a plant, the lion might get sick.
+			if(fieldObject instanceof Plant && !this.isSick && rand.nextDouble() < 0.08) {
+				this.isSick = true;
+			}
 			if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant) {
 				fieldObject.setDead();
 				foodLevel += this.getFoodValue(fieldObject);

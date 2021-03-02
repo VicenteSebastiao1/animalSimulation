@@ -108,8 +108,6 @@ public class Simulator
 		view.setColor(Water.class, Color.CYAN);
 		view.setColor(Plant.class, green);
 
-		// TODO add the rest of the animal with colors
-
 		// Setup a valid starting point.
 		reset();
 	}
@@ -211,55 +209,51 @@ public class Simulator
 					} else if (rand.nextDouble() <= ZEBRA_CREATION_PROBABILITY) {
 						Location location = new Location(row, col);
 						Zebra zebra = new Zebra(true, field, location);
-						animals.add(zebra);
-
-//					} else if (rand.nextDouble() <= PLANT_CREATION_PROBABILITY) {
-						
+						animals.add(zebra);						
 					}
 					Location location = new Location(row, col);
 					Plant plant = new Plant(field, location);
 					animals.add(plant);
-					// TODO add the animals that go into ground
 				}
-
-				// else leave the location empty.
 			}
 		}
 	}
 
-
+	/**
+	 * 
+	 */
 	private void fillFloorTypes() {
 		Random rand = Randomizer.getRandom();
-		Double waterProb = 0.1d;
+		Double waterProb;
 		Water water = new Water();
 		Ground ground = new Ground();
-		Class previousType;
 		for(int row = 0; row < field.getDepth(); row++) {
 			for(int col = 0; col < field.getWidth(); col++) {
 				waterProb = this.getWaterProbability(row, col);
 				if(rand.nextDouble() <= waterProb) {
 					Location location = new Location(row, col);
 					field.setFloorType(water, location);
-					previousType = water.getClass();
 				}
 				else {
 					Location location = new Location(row, col);
 					field.setFloorType(ground, location);
-					previousType = ground.getClass();
 				}
-				//waterProb = getWaterProbability(previousType);
-				// else leave the location empty.
 			}
 		}
 	}
 
 
-
+	/**
+	 * Checks the surrounding squares with each floor type and gives you the probability of the location you give to be water
+	 * @param row the row you want to check
+	 * @param col the column you want to check
+	 * @return a double between 0 and 1 with the probability of the current square of being water.
+	 */
 	private double getWaterProbability(int row, int col) {
 		if(row == 0 && col == 0) return 0.01;
 		int waterCount = 0;
 		int groundCount = 0;
-		if(row == 0) {
+		if(col > 0) {
 			Object floorTypeObject = field.getFloorTypeAt(row, col - 1);
 			if(floorTypeObject instanceof Water) {
 				waterCount++;
@@ -277,17 +271,7 @@ public class Simulator
 				}
 			}
 		}
-		return 0.1 + 0.3 * waterCount - 0.04 * groundCount;
-	}
-
-	private double getWaterProbability(Field field, int row, int col) {
-		// Define the probability between this four values. Check the possibility that
-		// you are at a border
-		field.getFloorTypeAt(row -  1, col);
-		field.getFloorTypeAt(row, col - 1);
-		field.getFloorTypeAt(row - 1, col - 1);
-		field.getFloorTypeAt(row - 1, col + 1);
-		return 0.5;
+		return 0.1 + 0.24 * waterCount - 0.04 * groundCount;
 	}
 
 	/**

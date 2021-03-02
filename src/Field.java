@@ -1,11 +1,9 @@
 package src;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import src.fieldType.FieldType;
 import src.fieldType.Ground;
 import src.fieldType.Water;
 
@@ -255,6 +253,12 @@ public class Field
     	return isWaterClose(location.getRow(), location.getCol());
     }
     
+    /**
+     * 
+     * @param row
+     * @param col
+     * @return
+     */
     public boolean isWaterClose(int row, int col) {
     	int length = 3;
     	for (int i = 0; i < 2*length; i++) {
@@ -290,6 +294,11 @@ public class Field
         }
     }
     
+    /**
+     * 
+     * @param location
+     * @return a location of ground if it's free or null if there is none
+     */
     public Location freeGroundAdjacentLocation(Location location)
     {
         // The available free ones.

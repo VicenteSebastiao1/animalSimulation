@@ -17,7 +17,7 @@ import src.animal.plants.Plant;
 
 public class Giraffe extends Prey{
 	// The age at which a Zebra can start to breed.
-	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 5;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 2;
 	// The age to which a Zebra can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 40;
 	// The likelihood of a Zebra breeding.

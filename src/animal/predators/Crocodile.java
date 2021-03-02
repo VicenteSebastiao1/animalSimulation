@@ -21,7 +21,7 @@ import src.animal.prey.Zebra;
 
 public class Crocodile extends Predator {
 	// The age at which a Crocodile can start to breed.
-	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 2;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 4;
 	// The age to which a Crocodile can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 500;
 	// The likelihood of a Crocodile breeding.

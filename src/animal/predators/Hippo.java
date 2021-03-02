@@ -18,7 +18,7 @@ import src.animal.prey.Zebra;
 
 public class Hippo extends Predator {
 	// The age at which a Hippo can start to breed.
-	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 15;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 3;
 	// The age to which a Hippo can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 400;
 	// The likelihood of a Hippo breeding.

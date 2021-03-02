@@ -32,7 +32,7 @@ public class Antelope extends Prey {
 	
 	private static final int MAX_FOOD = Field.FULL_DAY_LENGTH;
 
-	private static final double PROB_GETS_INFECTED = 0.2;
+	private static final double PROB_GETS_INFECTED = 0.0001;
 
 	// A shared random number generator to control breeding.
 	private static final Random rand = Randomizer.getRandom();
@@ -82,20 +82,6 @@ public class Antelope extends Prey {
 		}
 
 	}
-
-//	private void checkIfGetsInfected() {
-//		Field field = getField();
-//		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-//		for (Location where : free) {
-//			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-//			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
-//				this.isSick = true;
-//				return;
-//			}
-//		}
-//
-//	}
-
 	/**
 	 * Check whether or not this fox is to give birth at this step.
 	 * New births will be made into free adjacent locations.
@@ -105,6 +91,7 @@ public class Antelope extends Prey {
 	{
 		// New foxes are born into adjacent locations.
 		// Get a list of adjacent free locations.
+		if(this.isMale) return;
 		Field field = getField();
 		List<Location> free = field.getFreeAdjacentLocations(getLocation());
 		int births = breed(BREEDING_AGE, BREEDING_PROBABILITY, MAX_LITTER_SIZE);

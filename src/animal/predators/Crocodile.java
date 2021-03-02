@@ -35,7 +35,7 @@ public class Crocodile extends Predator {
 	private static final int GIRAFFE_FOOD_VALUE = Field.FULL_DAY_LENGTH;
 	private static final int ZEBRA_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.5);
 
-	private static final double PROB_GETS_INFECTED = 0.3;
+	private static final double PROB_GETS_INFECTED = 0.0015;
 	// A shared random number generator to control breeding.
 	private static final Random rand = Randomizer.getRandom();
 

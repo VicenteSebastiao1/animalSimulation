@@ -23,11 +23,11 @@ import src.animal.prey.Zebra;
 public class Lion extends Predator {
 
 	// The age at which a Lion can start to breed.
-	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 15;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 4;
 	// The age to which a Lion can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 150;
 	// The likelihood of a Lion breeding.
-	private static final double BREEDING_PROBABILITY = 0.08;
+	private static final double BREEDING_PROBABILITY = 0.0002;
 	// The maximum number of births.
 	private static final int MAX_LITTER_SIZE = 2;
 	// The food value of a single prey. In effect, this is the
@@ -35,7 +35,7 @@ public class Lion extends Predator {
 	private static final int ANTELOPE_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.75);
 	private static final int GIRAFFE_FOOD_VALUE = Field.FULL_DAY_LENGTH;
 	private static final int ZEBRA_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.5);
-	private static final double PROB_GETS_INFECTED = 0.07;
+	private static final double PROB_GETS_INFECTED = 0.00003;
 	// A shared random number generator to control breeding.
 	private static final Random rand = Randomizer.getRandom();
 
@@ -99,7 +99,7 @@ public class Lion extends Predator {
 		// New foxes are born into adjacent locations.
 		// Get a list of adjacent free locations.
 		Field field = getField();
-		List<Location> free = field.getFreeAdjacentLocations(getLocation());
+		List<Location> free = field.getFreeGroundAdjacentLocations(getLocation());
 		int births = breed(BREEDING_AGE, BREEDING_PROBABILITY, MAX_LITTER_SIZE);
 		for(int b = 0; b < births && free.size() > 0; b++) {
 			Location loc = free.remove(0);
@@ -122,9 +122,9 @@ public class Lion extends Predator {
 		while(it.hasNext()) {
 			Location where = it.next();
 			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-			if(fieldObject instanceof Plant && !this.isSick && rand.nextDouble() < 0.08) {
-				this.isSick = true;
-			}
+//			if(fieldObject instanceof Plant && !this.isSick && rand.nextDouble() < 0.08) {
+//				this.isSick = true;
+//			}
 			if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Prey && !(fieldObject instanceof Plant)) {
 				fieldObject.setDead();
 				foodLevel += this.getFoodValue(fieldObject);

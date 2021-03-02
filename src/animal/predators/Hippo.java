@@ -18,11 +18,11 @@ import src.animal.prey.Zebra;
 
 public class Hippo extends Predator {
 	// The age at which a Hippo can start to breed.
-	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 15;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 3;
 	// The age to which a Hippo can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 400;
 	// The likelihood of a Hippo breeding.
-	private static final double BREEDING_PROBABILITY = 0.05;
+	private static final double BREEDING_PROBABILITY = 0.1;
 	// The maximum number of births.
 	private static final int MAX_LITTER_SIZE = 1;
 	// The food value of a single prey. In effect, this is the
@@ -31,7 +31,7 @@ public class Hippo extends Predator {
 	private static final int GIRAFFE_FOOD_VALUE = Field.FULL_DAY_LENGTH;
 	private static final int ZEBRA_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.5);
 	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.1);
-	private static final double PROB_GETS_INFECTED = 0.5;
+	private static final double PROB_GETS_INFECTED = 0.0005;
 
 	public double getProbabilityGettingInfected() {
 		return PROB_GETS_INFECTED;

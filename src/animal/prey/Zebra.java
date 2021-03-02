@@ -17,7 +17,7 @@ import src.animal.plants.Plant;
 
 public class Zebra extends Prey{
 	// The age at which a Zebra can start to breed.
-	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 5;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 2;
 	// The age to which a Zebra can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 40;
 	// The likelihood of a Zebra breeding.
@@ -29,7 +29,7 @@ public class Zebra extends Prey{
 	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.1); // 1440 * 0.001 = 1.4
 	private static final int MAX_FOOD = Field.FULL_DAY_LENGTH;
 	// Probability of getting sick on contact with sick animals.
-	private static final double PROB_GETS_INFECTED = 0.8;
+	private static final double PROB_GETS_INFECTED = 0.002;
 	// A shared random number generator to control breeding.
 	private static final Random rand = Randomizer.getRandom();
 
@@ -101,6 +101,7 @@ public class Zebra extends Prey{
 	{
 		// New foxes are born into adjacent locations.
 		// Get a list of adjacent free locations.
+		if(this.isMale) return;
 		Field field = getField();
 		List<Location> free = field.getFreeAdjacentLocations(getLocation());
 		int births = breed(BREEDING_AGE, BREEDING_PROBABILITY, MAX_LITTER_SIZE);

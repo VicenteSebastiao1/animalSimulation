@@ -16,6 +16,11 @@ import src.animal.prey.Antelope;
 import src.animal.prey.Giraffe;
 import src.animal.prey.Zebra;
 
+/**
+ * A class describing an Lion predator, one of the
+ * actors in our simulation.
+ */
+
 public class Lion extends Predator {
 
 	// The age at which a Lion can start to breed.

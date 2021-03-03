@@ -44,6 +44,7 @@ public class Field
      * A method to seperate day and night (not equinox)
      * by counting steps 
      * @param Steps counted
+     * @return true if daytime.
      */
     public boolean isDayTime(int stepCount) {
     	int dayTimeConstant = (int) Math.floor(FULL_DAY_LENGTH * 0.65);
@@ -51,7 +52,7 @@ public class Field
     }
     
     /**
-     * Randomizes the creation of raim.
+     * Randomizes the creation of rain.
      */
     public void randomizeRain() {
     	if(this.isRaining) {

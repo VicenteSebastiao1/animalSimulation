@@ -1,6 +1,7 @@
 package src.animal.prey;
 
 import java.util.Iterator;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -11,6 +12,11 @@ import src.Randomizer;
 import src.animal.FieldObject;
 import src.animal.Prey;
 import src.animal.plants.Plant;
+
+/**
+ * A class describing an Antelope prey, one of the
+ * actors in our simulation.
+ */
 
 public class Antelope extends Prey {
 

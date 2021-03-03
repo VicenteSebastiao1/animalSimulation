@@ -16,22 +16,28 @@ import src.animal.prey.Antelope;
 import src.animal.prey.Giraffe;
 import src.animal.prey.Zebra;
 
+/**
+ * A class describing an Crocodile predator, one of the
+ * actors in our simulation.
+ */
+
 public class Crocodile extends Predator {
+	
 	// The age at which a Crocodile can start to breed.
-	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 4;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 2;
 	// The age to which a Crocodile can live.
-	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 500;
+	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 40;
 	// The likelihood of a Crocodile breeding.
-	private static final double BREEDING_PROBABILITY = 0.25;
+	private static final double BREEDING_PROBABILITY = 0.5;
 	// The maximum number of births.
 	private static final int MAX_LITTER_SIZE = 10;
-	// The food value of a single rabbit. In effect, this is the
-	// number of steps a Crocodile can go before it has to eat again.
-
+	// The food value of a single prey. When eaten, a prey will provide the predator 
+	// with enough food for a time period relative to the length of a full day. 
 	private static final int ANTELOPE_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.75);
 	private static final int GIRAFFE_FOOD_VALUE = Field.FULL_DAY_LENGTH;
 	private static final int ZEBRA_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.5);
 
+	// 	The probability that an animal gets infected upon contacting an infected being.
 	private static final double PROB_GETS_INFECTED = 0.0015;
 	// A shared random number generator to control breeding.
 	private static final Random rand = Randomizer.getRandom();
@@ -39,6 +45,16 @@ public class Crocodile extends Predator {
 	public double getProbabilityGettingInfected() {
 		return PROB_GETS_INFECTED;
 	}
+	
+	/**
+     * Create a Crocodile. A Crocodile can be created as a new born (age zero
+     * and not hungry) or with a random age and food level.
+     * 
+     * @param randomAge If true, the crocodile will have random age, hunger level and sickness parameters. If false, 
+     * the crocodile is a newborn, it will have GIRAFFE_FOOD_VALUE food level and it's not going to be sick. 
+     * @param field The field currently occupied.
+     * @param location The location within the field.
+     */
 	
 	public Crocodile(boolean randomAge, Field field, Location location)
 	{
@@ -57,7 +73,13 @@ public class Crocodile extends Predator {
 			this.isSick = false;
 		}
 	}
-
+	 /**
+     * This is what the crocodile does most of the time: it hunts for
+     * prey. In the process, it might breed, die of hunger, die of disease,
+     * or die of old age.
+     * @param field The field currently occupied.
+     * @param newCrocodiles A list to return newly born crocodiles.
+     */
 	@Override
 	public void act(List<FieldObject> newCrocodiles, int stepCount) {
 		incrementAge(MAX_AGE);
@@ -71,11 +93,6 @@ public class Crocodile extends Predator {
 			// Move towards a source of food if found.
 			Location newLocation = findFood();
 			newLocation = getField().freeWaterAdjacentLocation(getLocation());
-//			if(newLocation == null) {
-//				// No food found - try to move to a free location.
-//				newLocation = getField().freeWaterAdjacentLocation(getLocation());
-//			}
-			// See if it was possible to move.
 			if(newLocation != null) {
 				setLocation(newLocation);
 			}
@@ -87,22 +104,10 @@ public class Crocodile extends Predator {
 	}
 
 
-//	private void checkIfGetsInfected() {
-//		Field field = getField();
-//		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-//		for (Location where : free) {
-//			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-//			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
-//				this.isSick = true;
-//				return;
-//			}
-//		}
-//
-//	}
-	/**
-	 * Check whether or not this fox is to give birth at this step.
-	 * New births will be made into free adjacent locations.
-	 * @param newFoxes A list to return newly born foxes.
+	 /**
+	 * Check whether or not this Crocodile is going to give birth at this step.
+	 * New births will be made into free water adjacent locations.
+	 * @param newCrocodiles A list to return newly born crocodiles.
 	 */
 	private void giveBirth(List<FieldObject> newCrocodiles)
 	{
@@ -120,8 +125,8 @@ public class Crocodile extends Predator {
 	}
 
 	/**
-	 * Look for rabbits adjacent to the current location.
-	 * Only the first live rabbit is eaten.
+	 * Look for prey adjacent to the current location.
+	 * Only the first live prey is eaten.
 	 * @return Where food was found, or null if it wasn't.
 	 */
 	private Location findFood()
@@ -142,6 +147,11 @@ public class Crocodile extends Predator {
 		return null;
 	}
 
+	/**
+	 * This method gets the food value from the global variables.
+	 * This method assists the findFood method by letting it know how much
+	 * food the crocodile recieved from eating a prey. 
+	 */
 	private int getFoodValue(FieldObject fieldObject) {
 		if(fieldObject instanceof Zebra) {
 			return ZEBRA_FOOD_VALUE;

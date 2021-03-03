@@ -15,19 +15,20 @@ import src.animal.plants.Plant;
 public class Antelope extends Prey {
 
 	// The age at which a Antelope can start to breed.
-	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 2;
+	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 1;
 	// The age to which a Antelope can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 40;
 	// The likelihood of a Antelope breeding.
 	private static final double BREEDING_PROBABILITY = 0.01;
 	// The maximum number of births.
 	private static final int MAX_LITTER_SIZE = 2;
-	// The food value of a single prey. In effect, this is the
+	// The food value of a single plant. In effect, this is the
 	// number of steps an Antelope can go before it has to eat again.
 	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.1); // 1440 * 0.001 = 1.4
 	
 	private static final int MAX_FOOD = Field.FULL_DAY_LENGTH;
-
+	
+	// 	The probability that an animal gets infected upon contacting an infected being.
 	private static final double PROB_GETS_INFECTED = 0.0001;
 
 	// A shared random number generator to control breeding.
@@ -38,6 +39,15 @@ public class Antelope extends Prey {
 		return PROB_GETS_INFECTED;
 	}
 	
+	/**
+     * Create an Antelope. A antelope can be created as a new born (age zero
+     * and not hungry) or with a random age and food level.
+     * 
+     * @param randomAge If true, the antelope will have random age, hunger level and sickness parameters. If false, 
+     * the antelope is a newborn, it will have FULL_DAY_LENGTH food level and it's not going to be sick. 
+     * @param field The field currently occupied.
+     * @param location The location within the field.
+     */
 	public Antelope(boolean randomAge, Field field, Location location)
 	{
 		super(field, location);
@@ -53,6 +63,13 @@ public class Antelope extends Prey {
 		}
 	}
 
+	 /**
+     * This is what the antelope does most of the time: it grazes for
+     * plants. In the process, it might breed, die of hunger, die of disease, die of eaten,
+     * or die of old age.
+     * @param field The field currently occupied.
+     * @param newAntelopes A list to return newly born antelopes.
+     */
 	@Override
 	public void act(List<FieldObject> newAntelopes, int stepCount) {
 		incrementAge(MAX_AGE);
@@ -78,15 +95,13 @@ public class Antelope extends Prey {
 		}
 
 	}
-	/**
-	 * Check whether or not this fox is to give birth at this step.
-	 * New births will be made into free adjacent locations.
-	 * @param newAntelopes A list to return newly born foxes.
+	 /**
+	 * Check whether or not this Antelope is going to give birth at this step.
+	 * New births will be made into free ground adjacent locations.
+	 * @param newAntelopes A list to return newly born antelopes.
 	 */
 	private void giveBirth(List<FieldObject> newAntelopes)
 	{
-		// New foxes are born into adjacent locations.
-		// Get a list of adjacent free locations.
 		if(this.isMale) return;
 		Field field = getField();
 		List<Location> free = field.getFreeAdjacentLocations(getLocation());
@@ -99,8 +114,8 @@ public class Antelope extends Prey {
 	}
 
 	/**
-	 * Look for rabbits adjacent to the current location.
-	 * Only the first live rabbit is eaten.
+	 * Look for plants adjacent to the current location.
+	 * Only the first grass is eaten.
 	 * @return Where food was found, or null if it wasn't.
 	 */
 	private Location findFood()
@@ -112,7 +127,7 @@ public class Antelope extends Prey {
 		while(it.hasNext()) {
 			Location where = it.next();
 			FieldObject fieldObject = (FieldObject) field.getPlantAt(where);
-			//Given a chance, and upon contact with a plant, the lion might get sick.
+			//Given a chance, and upon contact with a plant, the antelope might get sick.
 			if(fieldObject instanceof Plant && !this.isSick && rand.nextDouble() < 0.08) {
 				this.isSick = true;
 			}

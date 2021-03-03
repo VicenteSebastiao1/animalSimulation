@@ -19,10 +19,8 @@ import java.util.Iterator;
 import java.awt.Color;
 
 /**
- * A simple predator-prey simulator, based on a rectangular field
- * containing rabbits and foxes.
- * 
-
+ * A predator-prey simulator, based on a rectangular field
+ * containing plants and different animals.
  */
 public class Simulator
 {
@@ -37,7 +35,7 @@ public class Simulator
 	private static final double LION_CREATION_PROBABILITY = 0.01;
 	// The probability that a Crocodile will be created in any given grid position.
 	private static final double CROCODILE_CREATION_PROBABILITY = 0.015;
-	// The probability that a hippo will be created in any given grid position.
+	// The probability that a Hippo will be created in any given grid position.
 	private static final double HIPPO_CREATION_PROBABILITY = 0.015;
 
 	//PREYS:
@@ -48,9 +46,6 @@ public class Simulator
 	// The probability that a Giraffe will be created in any given grid position.
 	private static final double GIRAFFE_CREATION_PROBABILITY = 0.01;
 
-	//Plants
-	// The probability that a plant will be created in any given grid position.
-	private static final double PLANT_CREATION_PROBABILITY = 0.2;
 
 
 
@@ -97,7 +92,7 @@ public class Simulator
 		view = new SimulatorView(depth, width);
 		Color green = new Color(0, 255, 0);
 		Color crocgreen = new Color(74,67,0);
-
+		// Assigning colors to the different animals:
 		view.setColor(Antelope.class, Color.ORANGE);
 		view.setColor(Giraffe.class, Color.YELLOW);
 		view.setColor(Zebra.class, Color.BLACK);
@@ -118,7 +113,7 @@ public class Simulator
 	 */
 	public void runLongSimulation()
 	{
-		simulate(50000);
+		simulate(4000);
 	}
 
 	/**
@@ -130,7 +125,7 @@ public class Simulator
 	{
 		for(int step = 1; step <= numSteps && view.isViable(field); step++) {
 			simulateOneStep();
-//			delay(60);   // uncomment this to run more slowly
+			delay(60);   // uncomment this to run more slowly
 		}
 	}
 
@@ -220,6 +215,8 @@ public class Simulator
 	}
 
 	/**
+	 * A method that spawns water or ground in the map,
+	 * depending on which probability is greater. 
 	 * 
 	 */
 	private void fillFloorTypes() {
@@ -244,15 +241,16 @@ public class Simulator
 
 
 	/**
-	 * Checks the surrounding squares with each floor type and gives you the probability of the location you give to be water
+	 * Checks the surrounding squares with each floor type and gives you the probability of the location given to be water,
+	 * more water generates more water.
 	 * @param row the row you want to check
 	 * @param col the column you want to check
 	 * @return a double between 0 and 1 with the probability of the current square of being water.
 	 */
 	private double getWaterProbability(int row, int col) {
-		if(row == 0 && col == 0) return 0.01;
-		int waterCount = 0;
-		int groundCount = 0;
+		if(row == 0 && col == 0) return 0.01; // We set a low water probability to the top left corner.
+		int waterCount = 0;    // counts the water squares nearby.
+		int groundCount = 0;   // counts the ground squares nearby.
 		if(col > 0) {
 			Object floorTypeObject = field.getFloorTypeAt(row, col - 1);
 			if(floorTypeObject instanceof Water) {
@@ -261,9 +259,15 @@ public class Simulator
 				groundCount++;
 			}
 		}
-		for(int i = 0; i < 3; i++) {
-			if(row > 0 && col + i - 1 > 0 && col + i - 1 < field.getWidth()) {
-				Object floorTypeObject = field.getFloorTypeAt(row - 1, col + i - 1);
+		/**
+		 * The first if condition makes sure don't go out of bounds.
+		 * if the row is greater than 0, we check the 3 rows. we also
+		 * check the columns. Example: If we are in the furtherst
+		 * right column, if i = 2, then col + 2 - 1 would've been out of bounds. 
+		 */		
+		for(int i = 0; i < 3; i++) {  //checks from 0 to 2 providing the next 3 horizontal squares.
+			if(row > 0 && col + i - 1 > 0 && col + i - 1 < field.getWidth()) { 
+				Object floorTypeObject = field.getFloorTypeAt(row - 1, col + i - 1); //gets floor type for pevious row and column.
 				if(floorTypeObject instanceof Water) {
 					waterCount++;
 				} else {
@@ -271,6 +275,13 @@ public class Simulator
 				}
 			}
 		}
+		/*
+		 * Math function to get water prob: For each step there is a 10% chance of a square being water.This prob is increased
+		 * by 24% for every other surrounding water square that already exists factored with the number of water squares 
+		 * around (waterCount).If there are ground squares around, there is a value corresponding to 0.04 factored with
+		 * the number of ground squares around (groundCount) which decreases the probability. 
+		 * 
+		 */
 		return 0.1 + 0.24 * waterCount - 0.04 * groundCount;
 	}
 

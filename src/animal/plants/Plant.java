@@ -4,10 +4,13 @@ import java.util.List;
 
 import src.Field;
 import src.Location;
-import src.animal.Animal;
 import src.animal.FieldObject;
-import src.animal.predators.Hippo;
-import src.fieldType.Water;
+
+/**
+ * A class which inherits from FieldObject
+ * and details the properties of a plant
+ * field object.
+ */
 
 public class Plant extends FieldObject{
 
@@ -40,16 +43,19 @@ public class Plant extends FieldObject{
         }
     }
 
+	/**
+	 * The reproduction process of plants
+	 */
 	public void reproduce(List<FieldObject> newPlants) {
 		if(!isAlive()) return;
 		Field field = getField();
 		List<Location> free = field.getFreeFromPlantGroundAdjacentLocations(getLocation());
-		double breedingProbability = 0.005;
+		double breedingProbability = 0.005; // Prob a plant will breed.
 		if(field.isWaterClose(this.location)) {
-			breedingProbability += 0.1;
+			breedingProbability += 0.1;    // Prob a plant will breed increased when water is close.
 		}
 		if(field.isRaining()) {
-			breedingProbability += 0.001;
+			breedingProbability += 0.001;  // Prob a plant will breed increased when its raining.
 		}
 		// TODO Don't reproduce plants on water
 		int births = breed(0, breedingProbability, 5);

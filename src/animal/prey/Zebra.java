@@ -1,6 +1,6 @@
 package src.animal.prey;
 
-import static src.animal.Animal.rand;
+
 
 import java.util.Iterator;
 import java.util.List;
@@ -10,10 +10,16 @@ import java.util.Random;
 import src.Field;
 import src.Location;
 import src.Randomizer;
-import src.animal.Animal;
 import src.animal.FieldObject;
 import src.animal.Prey;
 import src.animal.plants.Plant;
+
+
+/**
+ * A class describing an zebra prey, one of the
+ * actors in our simulation.
+ */
+
 
 public class Zebra extends Prey{
 	// The age at which a Zebra can start to breed.

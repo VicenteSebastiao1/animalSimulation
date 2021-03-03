@@ -3,8 +3,7 @@ package src.fieldType;
 public class Water extends FieldType {
 	
 	/**
-	 * This represents the water in the field. This has no methods and is for understanding purposes only
+	 * A solid field type which water animals swim in, in the savanna.
 	 */
-	public Water() {}
 
 }

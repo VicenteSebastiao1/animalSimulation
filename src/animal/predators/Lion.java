@@ -21,11 +21,11 @@ public class Lion extends Predator {
 	// The age at which a Lion can start to breed.
 	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 4;
 	// The age to which a Lion can live.
-	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 150;
+	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 30;
 	// The likelihood of a Lion breeding.
-	private static final double BREEDING_PROBABILITY = 0.0002;
+	private static final double BREEDING_PROBABILITY = 0.04;
 	// The maximum number of births.
-	private static final int MAX_LITTER_SIZE = 2;
+	private static final int MAX_LITTER_SIZE = 5;
 	// The food value of a single prey. When eaten, a prey will provide the predator 
 	// with enough food for a time period relative to the length of a full day.
 	private static final int ANTELOPE_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.75);
@@ -33,11 +33,10 @@ public class Lion extends Predator {
 	private static final int ZEBRA_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.5);
 
 	// 	The probability that an animal gets infected upon contacting an infected being.
-	private static final double PROB_GETS_INFECTED = 0.00003;
+	private static final double PROB_GETS_INFECTED = 0.005;
 	// A shared random number generator to control breeding.
 	private static final Random rand = Randomizer.getRandom();
 
-	// a method that will allow us to give a chance that the lion gets sick.
 	public double getProbabilityGettingInfected() {
 		return PROB_GETS_INFECTED;
 	}

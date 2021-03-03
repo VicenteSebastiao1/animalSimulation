@@ -13,13 +13,13 @@ import src.Randomizer;
 public abstract class Animal extends FieldObject
 {
     //protected static final String FIELD_TYPE;
-    protected final boolean isMale;
+    protected final boolean isMale; // males don't give birth.
     protected boolean isSick;
     protected int stepsBeingSick = 0;
     public static final Random rand = Randomizer.getRandom();
-    protected int foodLevel;
+    protected int foodLevel; //how much food the anima has
     protected static final int MAX_STEPS_SICK = 2000;
-    protected static final int MAX_FOOD = Field.FULL_DAY_LENGTH;
+    protected static final int MAX_FOOD = Field.FULL_DAY_LENGTH; //how much food an animal can eat before being full.
     
     public abstract double getProbabilityGettingInfected();
     
@@ -62,6 +62,10 @@ public abstract class Animal extends FieldObject
         }
     }
     
+    /**
+     * If a random double is less than the probability of being infected, upon contact
+     * with a sick animal, this animal will become sick too.
+     */
     protected void checkIfGetsInfected() {
 		Field field = getField();
 		List<Location> free = field.getAdjacentLocations(getLocation());
@@ -74,12 +78,4 @@ public abstract class Animal extends FieldObject
 		}
 
 	}
-
-
-    
-    /**
-     * Check whether or not this fox is to give birth at this step.
-     * New births will be made into free adjacent locations.
-     * @param newFoxes A list to return newly born foxes.
-     */
 }

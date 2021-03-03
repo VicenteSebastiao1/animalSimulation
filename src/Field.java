@@ -22,10 +22,11 @@ public class Field
     private int depth, width;
     // Storage for the animals.
     private Object[][][] field;
-    private boolean isRaining;
+    private boolean isRaining; 
     private int daysUntilStopsRaining;
     private double rainingProb = 0.2;
-    public static final int FULL_DAY_LENGTH = 1440;
+    //A day real day has 1440 min so 1440 steps is the value we chose to represent a day.
+    public static final int FULL_DAY_LENGTH = 1440; 
 
     /**
      * Represent a field of the given dimensions.
@@ -39,11 +40,19 @@ public class Field
         field = new Object[depth][width][3];
     }
     
+    /**
+     * A method to seperate day and night (not equinox)
+     * by counting steps 
+     * @param Steps counted
+     */
     public boolean isDayTime(int stepCount) {
     	int dayTimeConstant = (int) Math.floor(FULL_DAY_LENGTH * 0.65);
     	return (stepCount % FULL_DAY_LENGTH) < dayTimeConstant;
     }
     
+    /**
+     * Randomizes the creation of raim.
+     */
     public void randomizeRain() {
     	if(this.isRaining) {
     		daysUntilStopsRaining--;
@@ -60,6 +69,8 @@ public class Field
     public boolean isRaining() {
     	return this.isRaining;
     }
+    
+    
     /**
      * Empty the field.
      */
@@ -69,6 +80,7 @@ public class Field
         clearFloorTypes();
     }
     
+
     public void clearAnimalsAndPlants()
     {
         for(int row = 0; row < depth; row++) {
@@ -115,6 +127,12 @@ public class Field
         place(animal, new Location(row, col));
     }
     
+    /**
+     * Places a floor type on an index of the Grid.
+     * @param Ground or Water type.
+     * @param row Coordinate of the location.
+     * @param col Column coordinate of the location.
+     */
     public void setFloorType(Object floorType, int row, int col) {
     	setFloorType(floorType, new Location(row, col));
     }
@@ -130,6 +148,12 @@ public class Field
     {
     	field[location.getRow()][location.getCol()][1] = animal;
     }
+    
+    /**
+     * Place a plant at the given location.
+     * @param plant The plant to be placed.
+     * @param location Where to place the plant.
+     */
     
     public void placePlant(Object plant, Location location)
     {
@@ -151,6 +175,11 @@ public class Field
         return getObjectAt(location.getRow(), location.getCol());
     }
     
+    /**
+     * Return the plant at the given location, if any.
+     * @param location Where in the field.
+     * @return The plant at the given location, or null if there is none.
+     */
     public Object getPlantAt(Location location)
     {
         return getPlantAt(location.getRow(), location.getCol());
@@ -167,15 +196,28 @@ public class Field
         return field[row][col][1];
     }
     
+    /**
+     * Return the plant at the given location, if any.
+     * @param row The desired row.
+     * @param col The desired column.
+     * @return The plant at the given location, or null if there is none.
+     */
     public Object getPlantAt(int row, int col)
     {
         return field[row][col][2];
     }
     
+    /**
+     * Return the Floor Type at the given location, if any.
+     * @param row The desired row.
+     * @param col The desired column.
+     * @return The floorType at the given location, or null if there is none.
+     */
     public Object getFloorTypeAt(Location location)
     {
         return getFloorTypeAt(location.getRow(), location.getCol());
     }
+    
     
     public Object getFloorTypeAt(int row, int col)
     {
@@ -213,6 +255,11 @@ public class Field
         return free;
     }
     
+    /**
+     * Get a shuffled list of the free water type adjacent locations.
+     * @param location Gets water type locations adjacent to this.
+     * @return A list of free adjacent water locations.
+     */
     public List<Location> getFreeWaterAdjacentLocations(Location location)
     {
         List<Location> free = new LinkedList<>();
@@ -225,6 +272,11 @@ public class Field
         return free;
     }
     
+    /**
+     * Get a shuffled list of the free ground type adjacent locations.
+     * @param location Gets ground type locations adjacent to this.
+     * @return A list of free adjacent ground locations.
+     */
     public List<Location> getFreeGroundAdjacentLocations(Location location)
     {
         List<Location> free = new LinkedList<>();
@@ -237,6 +289,12 @@ public class Field
         return free;
     }
     
+    
+    /**
+     * Get a shuffled list of the free from plant covered ground type adjacent locations.
+     * @param location Gets free from plant covered ground type locations adjacent to this.
+     * @return A list of free adjacent free from plant covered ground locations.
+     */
     public List<Location> getFreeFromPlantGroundAdjacentLocations(Location location)
     {
         List<Location> free = new LinkedList<>();
@@ -255,20 +313,21 @@ public class Field
     
     /**
      * 
-     * @param row
-     * @param col
-     * @return
+     * @param row The desired row.
+     * @param col The desired column.
+     * @return true if there is water close
      */
     public boolean isWaterClose(int row, int col) {
-    	int length = 3;
-    	for (int i = 0; i < 2*length; i++) {
-    		int rowAux = row - length + i;
-    		if(rowAux < 0 || rowAux >= this.getDepth() - 1) continue;
-			for (int j = 0; j < 2*length; j++) {
-				int colAux = col - length + j;
-				if(colAux < 0 || colAux >= this.getWidth() - 1) continue;
+    	int length = 3;     //we defined water being close to a square if its a maximum 3 length away.
+    	for (int i = 0; i < 2*length; i++) { // makes sure we  check both ways not just to the right.
+    		int rowAux = row - length + i; //rowAux is the square we want to check if its water, if yes then its already true.
+    		//The if condition below checks that we neither check above the first row or beneath lowest row. (out of map).
+    		if(rowAux < 0 || rowAux >= this.getDepth() - 1) continue; 
+			for (int j = 0; j < 2*length; j++) { //if we have a row that's in the map we go through the columns.
+				int colAux = col - length + j;   
+				if(colAux < 0 || colAux >= this.getWidth() - 1) continue; //checks that we are in bounds.
 				Object fieldType = getFloorTypeAt(rowAux, colAux);
-				if(fieldType instanceof Water) return true;
+				if(fieldType instanceof Water) return true;  //if we found water, then returns true.
 			}
 		}
     	return false;
@@ -295,8 +354,7 @@ public class Field
     }
     
     /**
-     * 
-     * @param location
+     * @param location The free ground location
      * @return a location of ground if it's free or null if there is none
      */
     public Location freeGroundAdjacentLocation(Location location)
@@ -311,6 +369,10 @@ public class Field
         }
     }
     
+    /**
+     * @param location on grid.
+     * @return a location of water if it's free or null if there is none
+     */
     public Location freeWaterAdjacentLocation(Location location)
     {
         // The available free ones.

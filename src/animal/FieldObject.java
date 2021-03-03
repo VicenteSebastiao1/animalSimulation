@@ -8,14 +8,21 @@ import src.Location;
 import src.Randomizer;
 import src.animal.plants.Plant;
 
+/**
+ * A class that details a common properties of field objects.
+ * Field objects are things such as animals/plants.
+ * 
+ */
+
 public abstract class FieldObject {
 	
-	// Whether the animal is alive or not.
+	// Whether the field object is alive or not.
     protected boolean alive;
-    // The animal's field.
+    // The field object's field.
     protected Field field;
+    //the field object's age.
     protected int age;	
-    // The animal's position in the field.
+    // The field object's position in the field.
     protected Location location;
     private static final Random rand = Randomizer.getRandom();
     

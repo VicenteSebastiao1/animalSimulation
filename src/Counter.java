@@ -1,5 +1,4 @@
 package src;
-import java.awt.Color;
 
 /**
  * Provide a counter for a participant in the simulation.

@@ -1,6 +1,6 @@
 package src.animal.prey;
 
-import static src.animal.Animal.rand;
+
 
 import java.util.Iterator;
 import java.util.List;
@@ -10,10 +10,14 @@ import java.util.Random;
 import src.Field;
 import src.Location;
 import src.Randomizer;
-import src.animal.Animal;
 import src.animal.FieldObject;
 import src.animal.Prey;
 import src.animal.plants.Plant;
+
+/**
+ * A class describing an Giraffe prey, one of the
+ * actors in our simulation.
+ */
 
 public class Giraffe extends Prey{
 	// The age at which a Zebra can start to breed.
@@ -27,15 +31,29 @@ public class Giraffe extends Prey{
 	// The food value of a single prey. In effect, this is the
 	// number of steps a Giraffe can go before it has to eat again.
 	private static final int PLANT_FOOD_VALUE = (int) Math.floor(Field.FULL_DAY_LENGTH * 0.1); // 1440 * 0.001 = 1.4
+	
 	private static final int MAX_FOOD = Field.FULL_DAY_LENGTH;
-	// A shared random number generator to control breeding.
+	
+	// 	The probability that an animal gets infected upon contacting an infected being.
 	private static final double PROB_GETS_INFECTED = 0.0006;
-
+	
+	// A shared random number generator to control breeding.
 	private static final Random rand = Randomizer.getRandom();
+	
 
 	public double getProbabilityGettingInfected() {
 		return PROB_GETS_INFECTED;
 	}
+	
+	/**
+     * Create an Giraffe. A Giraffe can be created as a new born (age zero
+     * and not hungry) or with a random age and food level.
+     * 
+     * @param randomAge If true, the Giraffe will have random age, hunger level and sickness parameters. If false, 
+     * the Giraffe is a newborn, it will have FULL_DAY_LENGTH food level and it's not going to be sick. 
+     * @param field The field currently occupied.
+     * @param location The location within the field.
+     */
 	
 	public Giraffe(boolean randomAge, Field field, Location location)
 	{
@@ -52,6 +70,14 @@ public class Giraffe extends Prey{
 		}
 	}
 
+	 /**
+     * This is what the Giraffe does most of the time: it grazes for
+     * plants. In the process, it might breed, die of hunger, die of disease, die of eaten,
+     * or die of old age.
+     * @param field The field currently occupied.
+     * @param newGiraffes A list to return newly born Giraffes.
+     */
+	
 	@Override
 	public void act(List<FieldObject> newGiraffes, int stepCount) {
 		incrementAge(MAX_AGE);
@@ -79,27 +105,15 @@ public class Giraffe extends Prey{
 
 	}
 
-//	private void checkIfGetsInfected() {
-//		Field field = getField();
-//		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-//		for (Location where : free) {
-//			FieldObject fieldObject = (FieldObject) field.getObjectAt(where);
-//			if(fieldObject instanceof Animal && ((Animal)fieldObject).isSick() && rand.nextDouble() < PROB_GETS_INFECTED) {
-//				this.isSick = true;
-//				return;
-//			}
-//		}
-//
-//	}
-
-	/**
-	 * Check whether or not this fox is to give birth at this step.
-	 * New births will be made into free adjacent locations.
-	 * @param newFoxes A list to return newly born foxes.
+	 /**
+	 * Check whether or not this Giraffe is going to give birth at this step.
+	 * New births will be made into free ground adjacent locations.
+	 * @param newGiraffes A list to return newly born Giraffes.
 	 */
+	
 	private void giveBirth(List<FieldObject> newGiraffes)
 	{
-		// New foxes are born into adjacent locations.
+		// New Giraffes are born into adjacent locations.
 		// Get a list of adjacent free locations.
 		if(this.isMale) return;
 		Field field = getField();
@@ -113,8 +127,8 @@ public class Giraffe extends Prey{
 	}
 
 	/**
-	 * Look for rabbits adjacent to the current location.
-	 * Only the first live rabbit is eaten.
+	 * Look for plants adjacent to the current location.
+	 * Only the first grass is eaten.
 	 * @return Where food was found, or null if it wasn't.
 	 */
 	private Location findFood()

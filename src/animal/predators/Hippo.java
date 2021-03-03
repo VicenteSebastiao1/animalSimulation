@@ -26,7 +26,7 @@ public class Hippo extends Predator {
 	// The age to which a Hippo can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 30;
 	// The likelihood of a Hippo breeding.
-	private static final double BREEDING_PROBABILITY = 0.05;
+	private static final double BREEDING_PROBABILITY = 0.5;
 	// The maximum number of births.
 	private static final int MAX_LITTER_SIZE = 1;
 	// The food value of a single prey. When eaten, a prey will provide the predator 
@@ -113,16 +113,21 @@ public class Hippo extends Predator {
 	 */
 	private void giveBirth(List<FieldObject> newHippos)
 	{
-		if(this.isMale) return;
-		// New foxes are born into adjacent locations.
-		// Get a list of adjacent free locations.
+		if(this.isMale) return; //males don't giveBirth.
 		Field field = getField();
-		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-		int births = breed(BREEDING_AGE, BREEDING_PROBABILITY, MAX_LITTER_SIZE);
-		for(int b = 0; b < births && free.size() > 0; b++) {
-			Location loc = free.remove(0);
-			Hippo young = new Hippo(false, field, loc);
-			newHippos.add(young);
+		List<Location> adjacentLocations = field.adjacentLocations(getLocation());
+		for (Location location : adjacentLocations) {
+			FieldObject animal = (FieldObject) field.getObjectAt(location);
+			if(animal != null && animal instanceof Hippo && ((Hippo)animal).isMale) {
+				List<Location> free = field.getFreeGroundAdjacentLocations(getLocation());
+				int births = breed(BREEDING_AGE, BREEDING_PROBABILITY, MAX_LITTER_SIZE);
+				for(int b = 0; b < births && free.size() > 0; b++) {
+					Location loc = free.remove(0);
+					Hippo young = new Hippo(false, field, loc);
+					newHippos.add(young);
+				}
+				return;
+			}
 		}
 	}
 

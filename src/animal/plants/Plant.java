@@ -50,12 +50,12 @@ public class Plant extends FieldObject{
 		if(!isAlive()) return;
 		Field field = getField();
 		List<Location> free = field.getFreeFromPlantGroundAdjacentLocations(getLocation());
-		double breedingProbability = 0.005; // Prob a plant will breed.
+		double breedingProbability = 0.02; // Prob a plant will breed.
 		if(field.isWaterClose(this.location)) {
-			breedingProbability += 0.1;    // Prob a plant will breed increased when water is close.
+			breedingProbability += 0.01;    // Prob a plant will breed increased when water is close.
 		}
 		if(field.isRaining()) {
-			breedingProbability += 0.001;  // Prob a plant will breed increased when its raining.
+			breedingProbability += 0.002;  // Prob a plant will breed increased when its raining.
 		}
 		// TODO Don't reproduce plants on water
 		int births = breed(0, breedingProbability, 5);

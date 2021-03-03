@@ -20,12 +20,12 @@ import src.animal.plants.Plant;
  */
 
 public class Giraffe extends Prey{
-	// The age at which a this animal can start to breed.
+	// The age at which a this giraffe can start to breed.
 	private static final int BREEDING_AGE = Field.FULL_DAY_LENGTH * 2;
-	// The age to which a Zebra can live.
+	// The age to which a giraffe can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 40;
-	// The likelihood of a Zebra breeding.
-	private static final double BREEDING_PROBABILITY = 0.16;
+	// The likelihood of a giraffe breeding.
+	private static final double BREEDING_PROBABILITY = 0.15;
 	// The maximum number of births.
 	private static final int MAX_LITTER_SIZE = 2;
 	// The food value of a single prey. In effect, this is the
@@ -113,16 +113,21 @@ public class Giraffe extends Prey{
 	
 	private void giveBirth(List<FieldObject> newGiraffes)
 	{
-		// New Giraffes are born into adjacent locations.
-		// Get a list of adjacent free locations.
-		if(this.isMale) return;
+		if(this.isMale) return; //males don't giveBirth.
 		Field field = getField();
-		List<Location> free = field.getFreeAdjacentLocations(getLocation());
-		int births = breed(BREEDING_AGE, BREEDING_PROBABILITY, MAX_LITTER_SIZE);
-		for(int b = 0; b < births && free.size() > 0; b++) {
-			Location loc = free.remove(0);
-			Giraffe young = new Giraffe(false, field, loc);
-			newGiraffes.add(young);
+		List<Location> adjacentLocations = field.adjacentLocations(getLocation());
+		for (Location location : adjacentLocations) {
+			FieldObject animal = (FieldObject) field.getObjectAt(location);
+			if(animal != null && animal instanceof Giraffe && ((Giraffe)animal).isMale) {
+				List<Location> free = field.getFreeGroundAdjacentLocations(getLocation());
+				int births = breed(BREEDING_AGE, BREEDING_PROBABILITY, MAX_LITTER_SIZE);
+				for(int b = 0; b < births && free.size() > 0; b++) {
+					Location loc = free.remove(0);
+					Giraffe young = new Giraffe(false, field, loc);
+					newGiraffes.add(young);
+				}
+				return;
+			}
 		}
 	}
 

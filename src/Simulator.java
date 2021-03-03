@@ -1,7 +1,6 @@
 package src;
 import java.util.Random;
 
-import src.animal.Animal;
 import src.animal.FieldObject;
 import src.animal.plants.Plant;
 import src.animal.predators.Crocodile;
@@ -32,7 +31,7 @@ public class Simulator
 
 	//PREDATORS:
 	// The probability that a Lion will be created in any given grid position.
-	private static final double LION_CREATION_PROBABILITY = 0.01;
+	private static final double LION_CREATION_PROBABILITY = 0.02;
 	// The probability that a Crocodile will be created in any given grid position.
 	private static final double CROCODILE_CREATION_PROBABILITY = 0.015;
 	// The probability that a Hippo will be created in any given grid position.
@@ -113,7 +112,7 @@ public class Simulator
 	 */
 	public void runLongSimulation()
 	{
-		simulate(4000);
+		simulate(1000);
 	}
 
 	/**
@@ -125,7 +124,7 @@ public class Simulator
 	{
 		for(int step = 1; step <= numSteps && view.isViable(field); step++) {
 			simulateOneStep();
-//			delay(60);   // uncomment this to run more slowly
+			delay(6);   // uncomment this to run more slowly
 		}
 	}
 

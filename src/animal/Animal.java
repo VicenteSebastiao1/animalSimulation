@@ -18,7 +18,7 @@ public abstract class Animal extends FieldObject
     protected int stepsBeingSick = 0;
     public static final Random rand = Randomizer.getRandom();
     protected int foodLevel; //how much food the anima has
-    protected static final int MAX_STEPS_SICK = 2000;
+    protected static final int MAX_STEPS_SICK = Field.FULL_DAY_LENGTH * 7;
     protected static final int MAX_FOOD = Field.FULL_DAY_LENGTH; //how much food an animal can eat before being full.
     
     public abstract double getProbabilityGettingInfected();

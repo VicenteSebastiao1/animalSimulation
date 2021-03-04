@@ -15,11 +15,7 @@ public class FieldStats
     // Whether the counters are currently up to date.
     private boolean countsValid;
     
-    public HashMap<Class, Counter> getCounters() {
-    	return this.counters;
-    }
-
-    /**
+     /**
      * Construct a FieldStats object.
      */
     public FieldStats()

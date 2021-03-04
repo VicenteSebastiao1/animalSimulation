@@ -135,16 +135,7 @@ public class SimulatorView extends JFrame
             }
         }
         stats.countFinished();
-        Counter lionCounter = stats.getCounters().get(Lion.class);
-        if(lionCounter.getCount() == 0 && !lionsAt0) {
-        	System.out.println("Lions at 0 at step: " + step);
-        	lionsAt0 = true;
-        }
-        if(lionsAt0 && lionCounter.getCount() > 0) {
-        	System.out.println("Lions got back at step: " + step);
-        	lionsAt0 = false;
-        }
-
+        
         population.setText(POPULATION_PREFIX + stats.getPopulationDetails(field));
         fieldView.repaint();
     }

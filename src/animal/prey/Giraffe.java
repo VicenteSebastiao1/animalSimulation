@@ -145,7 +145,8 @@ public class Giraffe extends Prey{
 		while(it.hasNext()) {
 			Location where = it.next();
 			FieldObject fieldObject = (FieldObject) field.getPlantAt(where);
-			if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant) {
+			FieldObject possibleAnimal = (FieldObject) field.getObjectAt(where);
+			if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant && possibleAnimal == null) {
 				fieldObject.setDead();
 				foodLevel += this.getFoodValue(fieldObject);
 				return where;

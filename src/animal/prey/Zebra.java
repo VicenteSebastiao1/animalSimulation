@@ -125,10 +125,11 @@ public class Zebra extends Prey{
 		while(it.hasNext()) {
 			Location where = it.next();
 			FieldObject fieldObject = (FieldObject) field.getPlantAt(where);
+			FieldObject possibleAnimal = (FieldObject) field.getObjectAt(where);
 			if(fieldObject instanceof Plant && !this.isSick && rand.nextDouble() < 0.08) {
 				this.isSick = true;
 			}
-			if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant) {
+			if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant && possibleAnimal == null) {
 				fieldObject.setDead();
 				foodLevel += this.getFoodValue(fieldObject);
 				return where;

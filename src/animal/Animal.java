@@ -50,7 +50,9 @@ public abstract class Animal extends FieldObject
     protected void incrementStepsSick() {
     	if(this.isSick) {
         	this.stepsBeingSick++;
-        	if(this.stepsBeingSick > MAX_STEPS_SICK) setDead();
+        	if(this.stepsBeingSick > MAX_STEPS_SICK) {
+        		setDead();
+        	}
         }
     }
     

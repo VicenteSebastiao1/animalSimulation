@@ -28,7 +28,7 @@ public class Lion extends Predator {
 	// The age to which a Lion can live.
 	private static final int MAX_AGE = Field.FULL_DAY_LENGTH * 30;
 	// The likelihood of a Lion breeding.
-	private static final double BREEDING_PROBABILITY = 0.9;
+	private static final double BREEDING_PROBABILITY = 0.09;
 	// The maximum number of births.
 	private static final int MAX_LITTER_SIZE = 8;
 	// The food value of a single prey. When eaten, a prey will provide the predator 

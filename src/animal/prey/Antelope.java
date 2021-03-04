@@ -140,14 +140,15 @@ public class Antelope extends Prey {
 		Iterator<Location> it = adjacent.iterator();
 		while(it.hasNext()) {
 			Location where = it.next();
-			FieldObject fieldObject = (FieldObject) field.getPlantAt(where);
+			FieldObject possiblePlant = (FieldObject) field.getPlantAt(where);
+			FieldObject possibleAnimal = (FieldObject) field.getObjectAt(where);
 			//Given a chance, and upon contact with a plant, the antelope might get sick.
-			if(fieldObject instanceof Plant && !this.isSick && rand.nextDouble() < 0.08) {
+			if(possiblePlant instanceof Plant && !this.isSick && rand.nextDouble() < 0.08) {
 				this.isSick = true;
 			}
-			if(fieldObject != null && fieldObject.isAlive() && fieldObject instanceof Plant) {
-				fieldObject.setDead();
-				foodLevel += this.getFoodValue(fieldObject);
+			if(possiblePlant != null && possiblePlant.isAlive() && possiblePlant instanceof Plant && possibleAnimal == null) {
+				possiblePlant.setDead();
+				foodLevel += this.getFoodValue(possiblePlant);
 				return where;
 			}
 		}
